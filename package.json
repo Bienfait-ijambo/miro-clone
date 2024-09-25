@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vue-tsc --noEmit && vite build"
+        "build": "vue-tsc --noEmit && vite build",
+         "build-css": "tailwindcss -i ./resources/css/input.css -o ./resources/css/app.css -w"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^5.0.4",
@@ -19,12 +20,17 @@
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
         "apexcharts": "^3.49.1",
+        "autoprefixer": "^10.4.20",
         "laravel-vue-pagination": "^4.1.3",
         "pinia": "^2.1.7",
+        "postcss": "^8.4.47",
+        "tailwindcss": "^3.4.11",
         "vue": "^3.4.27",
         "vue-router": "^4.3.2",
         "vue-sweetalert2": "^5.0.10",
         "vue-toast-notification": "^3.1.2",
-        "vue3-apexcharts": "^1.5.3"
+        "vue3-apexcharts": "^1.5.3",
+        "y-websocket": "^2.0.4",
+        "yjs": "^13.6.19"
     }
 }
