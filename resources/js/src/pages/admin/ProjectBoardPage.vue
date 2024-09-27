@@ -6,9 +6,13 @@ import UndoRedo from "./components/project-board/UndoRedo.vue";
 
 import { useDragStickyNote } from "./actions/project-board/stickyNote";
 import StickyNote from './components/project-board/StickyNote.vue';
+import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
 import { onMounted } from "vue";
+import { useDragMiniTextEditor } from "./actions/project-board/miniTextEditor";
 
 const { dragStickyNote, createStickyNote,stickyNote,deleteStickyNote } = useDragStickyNote();
+
+const {dragMiniTextEditor,createMiniTextEditor,deleteMiniTextEditor,miniTextEditor}=useDragMiniTextEditor()
 
 function changeStickyNoteColor(stickyNoteId:number,color:string){
 
@@ -18,6 +22,17 @@ function changeStickyNoteColor(stickyNoteId:number,color:string){
         }
        
     }
+
+}
+
+function changeMiniTextEditorColor(miniTextEditorId:number,color:string){
+
+for(let i = 0; i <miniTextEditor.value.length; i++){
+    if( miniTextEditor.value[i].id===miniTextEditorId){
+        miniTextEditor.value[i].color=color
+    }
+   
+}
 
 }
 // onMounted(() => {
@@ -33,7 +48,7 @@ function changeStickyNoteColor(stickyNoteId:number,color:string){
                 width="50"  alt="logo">
                </div> -->
 
-                <AddItem  @createStickyNote="createStickyNote"/>
+                <AddItem  @createStickyNote="createStickyNote" @createMiniTextEditor="createMiniTextEditor"/>
 
 
                 <ColorPalette :stickyNotes="stickyNote" @changeStickyNoteColor="changeStickyNoteColor" />
@@ -75,6 +90,14 @@ function changeStickyNoteColor(stickyNoteId:number,color:string){
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
                     <!-- list of ceated projects  -->
                     <StickyNote @deleteStickyNote="deleteStickyNote" :sticky-notes="stickyNote" />
+                    <MiniTextEditor 
+                    @changeMiniTextEditorColor="changeMiniTextEditorColor"
+                     @deleteMiniTextEditor="deleteMiniTextEditor"
+                     :miniTextEditors="miniTextEditor"
+                     />
+                     
+
+
                     
                 </div>
             </div>
