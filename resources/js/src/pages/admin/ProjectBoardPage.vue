@@ -8,7 +8,7 @@ import { useDragStickyNote } from "./actions/project-board/stickyNote";
 import StickyNote from './components/project-board/StickyNote.vue';
 import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
 import { onMounted } from "vue";
-import { useDragMiniTextEditor } from "./actions/project-board/miniTextEditor";
+import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 
 const { dragStickyNote, createStickyNote,stickyNote,deleteStickyNote } = useDragStickyNote();
 
