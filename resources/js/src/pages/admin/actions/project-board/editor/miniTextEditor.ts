@@ -4,7 +4,16 @@ import { miniTextEditorStore } from "../../../../../store/miniTextEditor";
 import { useEditor } from "./editor";
 
 export function useDragMiniTextEditor() {
-    const  {applyBold,applyItalic,applyUnderline,applyTag,insertImage,applyAlignment,applyLink,applyUnOrderedList}=useEditor()
+    const {
+        applyBold,
+        applyItalic,
+        applyUnderline,
+        applyTag,
+        insertImage,
+        applyAlignment,
+        applyLink,
+        applyUnOrderedList,
+    } = useEditor();
     const miniTextEditor = ref<IMiniTextEditor[]>([] as IMiniTextEditor[]);
     let count = 0;
 
@@ -131,25 +140,19 @@ export function useDragMiniTextEditor() {
             }
         });
 
-
-        applyBold(id)
-        applyItalic(id)
-        applyUnderline(id)
-        applyTag(id,'h1')
-        applyTag(id,'h2')
-        applyTag(id,'h3')
-        applyAlignment(id,'left')
-        applyAlignment(id,'right')
-        applyAlignment(id,'center')
-        applyUnOrderedList(id)
-        applyLink(id)
-        insertImage(id)
-
-
-      
+        applyBold(id);
+        applyItalic(id);
+        applyUnderline(id);
+        applyTag(id, "h1");
+        applyTag(id, "h2");
+        applyTag(id, "h3");
+        applyAlignment(id, "left");
+        applyAlignment(id, "right");
+        applyAlignment(id, "center");
+        applyUnOrderedList(id);
+        applyLink(id);
+        insertImage(id);
     }
-
-   
 
     // return { dragminiTextEditor,createminiTextEditor ,miniTextEditor,deleteminiTextEditor};
 

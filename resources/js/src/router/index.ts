@@ -20,6 +20,11 @@ const router = createRouter({
           name: "project-board",
           component: () => import("../pages/admin/ProjectBoardPage.vue"),
       },
+      {
+        path: "/learn-yjs",
+        name: "learn-yjs",
+        component: () => import("../pages/admin/LearnYjs.vue"),
+    },
     ],
 });
 
