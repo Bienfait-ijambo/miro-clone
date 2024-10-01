@@ -5,39 +5,39 @@ import ColorPalette from "./components/project-board/ColorPalette.vue";
 import UndoRedo from "./components/project-board/UndoRedo.vue";
 
 import { useDragStickyNote } from "./actions/project-board/stickyNote";
-import StickyNote from './components/project-board/StickyNote.vue';
+import StickyNote from "./components/project-board/StickyNote.vue";
 import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
 import { onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 
-const { dragStickyNote, createStickyNote,stickyNote,deleteStickyNote } = useDragStickyNote();
+const { dragStickyNote, createStickyNote,initYjs, stickyNote, deleteStickyNote } =
+    useDragStickyNote();
 
-const {dragMiniTextEditor,createMiniTextEditor,deleteMiniTextEditor,miniTextEditor}=useDragMiniTextEditor()
+const {
+    dragMiniTextEditor,
+    createMiniTextEditor,
+    deleteMiniTextEditor,
+    miniTextEditor,
+} = useDragMiniTextEditor();
 
-function changeStickyNoteColor(stickyNoteId:number,color:string){
-
-    for(let i = 0; i <stickyNote.value.length; i++){
-        if( stickyNote.value[i].id===stickyNoteId){
-            stickyNote.value[i].color=color
+function changeStickyNoteColor(stickyNoteId: number, color: string) {
+    for (let i = 0; i < stickyNote.value.length; i++) {
+        if (stickyNote.value[i].id === stickyNoteId) {
+            stickyNote.value[i].color = color;
         }
-       
     }
-
 }
 
-function changeMiniTextEditorColor(miniTextEditorId:number,color:string){
-
-for(let i = 0; i <miniTextEditor.value.length; i++){
-    if( miniTextEditor.value[i].id===miniTextEditorId){
-        miniTextEditor.value[i].color=color
+function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
+    for (let i = 0; i < miniTextEditor.value.length; i++) {
+        if (miniTextEditor.value[i].id === miniTextEditorId) {
+            miniTextEditor.value[i].color = color;
+        }
     }
-   
 }
-
-}
-// onMounted(() => {
-//     setTimeout(() => dragStickyNote(), 2000);
-// });
+onMounted(() => {
+    initYjs()
+});
 </script>
 <template>
     <div class="bg-slate-100">
@@ -48,10 +48,15 @@ for(let i = 0; i <miniTextEditor.value.length; i++){
                 width="50"  alt="logo">
                </div> -->
 
-                <AddItem  @createStickyNote="createStickyNote" @createMiniTextEditor="createMiniTextEditor"/>
+                <AddItem
+                    @createStickyNote="createStickyNote"
+                    @createMiniTextEditor="createMiniTextEditor"
+                />
 
-
-                <ColorPalette :stickyNotes="stickyNote" @changeStickyNoteColor="changeStickyNoteColor" />
+                <ColorPalette
+                    :stickyNotes="stickyNote"
+                    @changeStickyNoteColor="changeStickyNoteColor"
+                />
                 <UndoRedo />
             </div>
 
@@ -89,17 +94,19 @@ for(let i = 0; i <miniTextEditor.value.length; i++){
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
                     <!-- list of ceated projects  -->
-                    <StickyNote @deleteStickyNote="deleteStickyNote" :sticky-notes="stickyNote" />
-                    <MiniTextEditor 
-                    @changeMiniTextEditorColor="changeMiniTextEditorColor"
-                     @deleteMiniTextEditor="deleteMiniTextEditor"
-                     :miniTextEditors="miniTextEditor"
-                     />
-                     
+                    <StickyNote
+                        @deleteStickyNote="deleteStickyNote"
+                        :sticky-notes="stickyNote"
+                    />
+                    <MiniTextEditor
+                        @changeMiniTextEditorColor="changeMiniTextEditorColor"
+                        @deleteMiniTextEditor="deleteMiniTextEditor"
+                        :miniTextEditors="miniTextEditor"
+                    />
 
-
-                    
                 </div>
+                {{ stickyNote }}
+
             </div>
         </div>
     </div>
