@@ -14,10 +14,11 @@ const emit = defineEmits<{
     <div
         v-for="stickyNote in stickyNotes"
         :key="stickyNote.id"
-        :style="{
-            top: stickyNote.dragPosition.y + 'px',
-            left: stickyNote.dragPosition.x + 'px',
-        }"
+       :style="{
+        top:stickyNote.dragPosition.y+'px',
+        left:stickyNote.dragPosition.x+'px'
+
+       }"
         :class="
             'flex flex-col min-h-40 w-[200px] shadow-md  p-1 rounded-md cursor-pointer sticky-note-' +
             stickyNote.id +

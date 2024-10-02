@@ -36,7 +36,11 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 onMounted(() => {
-    initYjs()
+    setTimeout(()=> {
+        initYjs()
+   console.log('init yjs....')
+    },5000)
+    
 });
 </script>
 <template>

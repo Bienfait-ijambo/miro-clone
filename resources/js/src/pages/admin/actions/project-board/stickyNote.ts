@@ -3,99 +3,102 @@ import { IStickyNote } from "./stickyNoteTypes";
 import { stickyNoteStore } from "../../../../store/stickyNote";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
+import { IndexeddbPersistence } from 'y-indexeddb'
 
 export function useDragStickyNote() {
-
-    
     let newX = 0,
-    newY = 0,
-    startX = 0,
-    startY = 0;
+        newY = 0,
+        startX = 0,
+        startY = 0;
 
-let newRX = 0,
-    newRY = 0,
-    startRX = 0,
-    startRY = 0;
+    let newRX = 0,
+        newRY = 0,
+        startRX = 0,
+        startRY = 0;
 
-let stickyNoteStartwidth = 0,
-    stickyNoteStartHeight = 0;
+    let stickyNoteStartwidth = 0,
+        stickyNoteStartHeight = 0;
     const stickyNote = ref<IStickyNote[]>([] as IStickyNote[]);
     let count = 0;
 
-    const doc=ref()
-    const hasEvents=new Set()
+    const doc = ref()
 
+    const yArrayStickyNote = ref();
 
-const yArrayStickyNote=ref()
+    const stickyNoteHasEventSet = new Set();
 
-    function initYjs() {
+     function initYjs() {
         console.log("...");
-    
-            doc.value = new Y.Doc();
-
-
+       
+        doc.value = new Y.Doc();
 
         yArrayStickyNote.value = doc.value.getArray("y-array-sticky-notes");
-    
-    
-    
+
         yArrayStickyNote.value.observe((event: any) => {
             // margin.value.left = yMap.value.get("margin-left");
             // console.log("ymap was modified");
-            stickyNote.value=yArrayStickyNote.value.toArray();
+            stickyNote.value = yArrayStickyNote.value.toArray();
+            console.log(yArrayStickyNote.value.toArray())
 
-            for(const item of stickyNote.value){
-                console.log('all',item.id)
-                if(hasEvents.has(item.id)===false){
-                    console.log('not',item.id)
-                setTimeout(() => {
-                    dragStickyNote(item.id)
-                    hasEvents.add(item.id)
-                    let d = document.querySelector('.sticky-note-' + item.id) as any
-                    d.style.position = 'absolute'
-
-                }, 2000);
-           
-
+            for (const item of   stickyNote.value ) {
+                if (stickyNoteHasEventSet.has(item.id) === false) {
+                    stickyNoteHasEventSet.add(item.id);
+                    setTimeout(() => {
+                       
+                        dragStickyNote(item.id);
+                        let stickyNote = document.querySelector(
+                            ".sticky-note-" + item.id
+                        ) as HTMLElement;
+                        stickyNote.style.position="absolute"
+                    
+                        //add an event on each sticky note
+                        
+                    }, 2000);
                 }
             }
         });
-    
-    
+
+
+        const indexeddbProvider = new IndexeddbPersistence('count-demo', doc.value)
+indexeddbProvider.whenSynced.then(() => {
+  console.log('loaded data from indexed db')
+})
+
         new WebsocketProvider("ws://localhost:1234", "my-room", doc.value);
+        // pro.once('synced', () => {
+        //     const allT=getAllTypes()
+        //     console.log('all types',allT);
+        // })
     }
 
 
+    function getAllTypes(){
+        const types:any=[]
+        doc.value.share.forEach((value:any,key:any) => {
+            types.push({key:key,value:value})
+        });
+        return types;
+    }
 
-    function trackStickyNoteXYPosition(id:number){
+    function changeStickyNoteXYPosition(id: number) {
+        const index = stickyNote.value.findIndex((obj) => obj.id === id);
 
-        const index=stickyNote.value.findIndex(obj=>obj.id===id);
-        
-        const x=stickyNote.value[index].dragPosition.x=startX
-        const y=stickyNote.value[index].dragPosition.y=startY
+        const x = (stickyNote.value[index].dragPosition.x = startX);
+        const y = (stickyNote.value[index].dragPosition.y = startY);
 
+        doc.value.transact(function () {
+            const trackStickyNote = yArrayStickyNote.value.get(index);
 
-        doc.value.transact(()=>{
-
-            const item=yArrayStickyNote.value.get(index)
-
-            if(stickyNote){
-                item.dragPosition.x=x
-                item.dragPosition.y=y
+            if (trackStickyNote) {
+                trackStickyNote.dragPosition.y = y;
+                trackStickyNote.dragPosition.x = x;
             }
-
-            yArrayStickyNote.value.delete(index)
-            yArrayStickyNote.value.insert(index,[item])
-        })
-
-
+            yArrayStickyNote.value.delete(index);
+            yArrayStickyNote.value.insert(index, [trackStickyNote]);
+        });
     }
-    
-    
 
-   
     function createStickyNote() {
-        // yArrayStickyNote.value.delete(0,8)
         count++;
         const color = getRandomColorClass();
 
@@ -110,28 +113,26 @@ const yArrayStickyNote=ref()
             dragPosition: {
                 x: 0,
                 y: 0,
-            
             },
         });
 
-        yArrayStickyNote.value.insert(0,[{
-            id: count,
-            body: "",
-            color: color,
-            resizePosition: {
-                x: 0,
-                y: 0,
+        yArrayStickyNote.value.insert(0, [
+            {
+                id: count,
+                body: "",
+                color: color,
+                resizePosition: {
+                    x: 0,
+                    y: 0,
+                },
+                dragPosition: {
+                    x: 0,
+                    y: 0,
+                },
             },
-            dragPosition: {
-                x: 0,
-                y: 0,
-            },
-        }])
+        ]);
 
-
-    
         stickyNoteStore.stickyNote.id = count;
-       
 
         setTimeout(() => dragStickyNote(count), 200);
     }
@@ -147,8 +148,13 @@ const yArrayStickyNote=ref()
         return colorClasses[randomIndex];
     }
 
-    function deleteStickyNote(stickyNote: IStickyNote) {
-        console.log("deleteStickyNote", stickyNote);
+    function deleteStickyNote(_stickyNote: IStickyNote) {
+        const index = stickyNote.value.findIndex(
+            (obj) => obj.id === _stickyNote.id
+        );
+        stickyNote.value.splice(index, index);
+
+        yArrayStickyNote.value.delete(index);
     }
 
     function dragStickyNote(id: number) {
@@ -161,7 +167,6 @@ const yArrayStickyNote=ref()
         const stickyNoteResizer = document.querySelector(
             ".sticky-note-resizer-" + id
         ) as HTMLElement;
-
 
         // dragging
         // resizing
@@ -185,11 +190,8 @@ const yArrayStickyNote=ref()
                 const newWidth = stickyNoteStartwidth + e.clientX - startRX;
                 const newHeight = stickyNoteStartHeight + e.clientY - startRY;
 
-
                 stickyNote.style.width = Math.max(newWidth, 150) + "px";
                 stickyNote.style.height = Math.max(newHeight, 100) + "px";
-
-                
             }
 
             function mouseUp(e: any) {
@@ -215,7 +217,9 @@ const yArrayStickyNote=ref()
 
                 startX = e.clientX;
                 startY = e.clientY;
-                trackStickyNoteXYPosition(id)
+
+                changeStickyNoteXYPosition(id);
+
                 stickyNote.style.top = stickyNote.offsetTop - newY + "px";
                 stickyNote.style.left = stickyNote.offsetLeft - newX + "px";
             }
