@@ -10,8 +10,13 @@ import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
 import { onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 
-const { dragStickyNote, createStickyNote,initYjs, stickyNote, deleteStickyNote } =
-    useDragStickyNote();
+const {
+    dragStickyNote,
+    createStickyNote,
+    initYjs,
+    stickyNote,
+    deleteStickyNote,
+} = useDragStickyNote();
 
 const {
     dragMiniTextEditor,
@@ -36,11 +41,7 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 onMounted(() => {
-    setTimeout(()=> {
-        initYjs()
-   console.log('init yjs....')
-    },5000)
-    
+    initYjs();
 });
 </script>
 <template>
@@ -107,10 +108,8 @@ onMounted(() => {
                         @deleteMiniTextEditor="deleteMiniTextEditor"
                         :miniTextEditors="miniTextEditor"
                     />
-
                 </div>
                 {{ stickyNote }}
-
             </div>
         </div>
     </div>
