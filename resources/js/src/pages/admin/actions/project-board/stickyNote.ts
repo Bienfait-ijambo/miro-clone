@@ -1,9 +1,6 @@
 import { ref } from "vue";
 import { IStickyNote } from "./stickyNoteTypes";
 import { stickyNoteStore } from "../../../../store/stickyNote";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-import { IndexeddbPersistence } from "y-indexeddb";
 
 export function useDragStickyNote() {
     let newX = 0,
@@ -12,7 +9,7 @@ export function useDragStickyNote() {
         startY = 0;
 
     //default width
-    let newResizeX = 150,
+    let newResizeX = 200,
         //default height
         newResizeY = 100,
         startRX = 0,
@@ -27,45 +24,9 @@ export function useDragStickyNote() {
 
     const yArrayStickyNote = ref();
 
-    const stickyNoteHasEventSet = new Set();
+    const stickyNoteHasEventSet = new Set<number>();
 
-    function initYjs() {
-        console.log("...");
-
-        doc.value = new Y.Doc();
-
-        yArrayStickyNote.value = doc.value.getArray("y-array-sticky-notes");
-
-        yArrayStickyNote.value.observe((event: any) => {
-            stickyNote.value = yArrayStickyNote.value.toArray();
-
-            for (const item of stickyNote.value) {
-                if (stickyNoteHasEventSet.has(item.id) === false) {
-                    stickyNoteHasEventSet.add(item.id);
-                    setTimeout(() => {
-                        dragStickyNote(item.id);
-                        changeStickyNoteBodyContent(item.id);
-                        const _stickyNote = document.querySelector(
-                            ".sticky-note-" + item.id
-                        ) as HTMLElement;
-                        _stickyNote.style.position = "absolute";
-                        //add an event on each sticky note
-                    }, 2000);
-                }
-            }
-        });
-
-        // this allows you to instantly get the (cached) documents data
-        const indexeddbProvider = new IndexeddbPersistence(
-            "sticky-note",
-            doc.value
-        );
-        indexeddbProvider.whenSynced.then(() => {
-            console.log("loaded data from indexed db");
-        });
-
-        new WebsocketProvider("ws://localhost:1234", "sticky-note", doc.value);
-    }
+    
 
     function changeStickyNoteBodyContent(id: number) {
         const stickyNoteContent = document.querySelector(
@@ -263,7 +224,15 @@ export function useDragStickyNote() {
         dragStickyNote,
         createStickyNote,
         stickyNote,
-        initYjs,
+      
         deleteStickyNote,
+
+
+        yArrayStickyNote,
+        doc ,
+        stickyNoteHasEventSet,
+        changeStickyNoteBodyContent,
+        
+
     };
 }
