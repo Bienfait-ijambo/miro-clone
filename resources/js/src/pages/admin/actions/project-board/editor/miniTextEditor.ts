@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { IMiniTextEditor } from "../miniTextEditorTypes";
 import { miniTextEditorStore } from "../../../../../store/miniTextEditor";
 import { useEditor } from "./editor";
+import { yDocStore } from "../../../../../store/yDoc";
 
 export function useDragMiniTextEditor() {
     const {
@@ -17,6 +18,23 @@ export function useDragMiniTextEditor() {
     const miniTextEditor = ref<IMiniTextEditor[]>([] as IMiniTextEditor[]);
     let count = 0;
 
+    let newX = 0,
+    newY = 0,
+    startX = 0,
+    startY = 0;
+
+let newMiniTextEditorHeight = 0,
+    startRX = 0,
+    startRY = 0;
+
+let miniTextEditorStartwidth = 0,
+    miniTextEditorStartHeight = 0;
+
+    
+    const yArrayMiniTextEditor = ref();
+
+    const miniTextEditorHasEventSet = new Set<number>();
+
     function createMiniTextEditor() {
         count++;
         const color = getRandomColorClass();
@@ -27,7 +45,7 @@ export function useDragMiniTextEditor() {
             color: color,
             resizePosition: {
                 x: 0,
-                y: 0,
+                y: newMiniTextEditorHeight,
             },
             dragPosition: {
                 x: 0,
@@ -35,9 +53,81 @@ export function useDragMiniTextEditor() {
             },
         });
 
+
+        yArrayMiniTextEditor.value.insert(0,[{
+            id: count,
+            body: "",
+            color: color,
+            resizePosition: {
+                x: 0,
+                y: newMiniTextEditorHeight,
+            },
+            dragPosition: {
+                x: 0,
+                y: 0,
+            },
+        }]);
+
         miniTextEditorStore.miniTextEditor.id = count;
         setTimeout(() => dragMiniTextEditor(count), 200);
     }
+
+    function changeMiniTextEditorBodyContent(id:number){
+
+        const miniTextEditorContent = document.querySelector(
+            ".text-editor-body-" + id
+        ) as HTMLElement;
+        const index = miniTextEditor.value.findIndex((obj) => obj.id === id);
+
+        miniTextEditorContent.addEventListener("keydown", function () {
+            yDocStore.doc.transact(function () {
+                const trackminiTextEditor = yArrayMiniTextEditor.value.get(index);
+
+                if (trackminiTextEditor) {
+                    trackminiTextEditor.body = miniTextEditorContent.textContent;
+                }
+                yArrayMiniTextEditor.value.delete(index);
+                yArrayMiniTextEditor.value.insert(index, [trackminiTextEditor]);
+            });
+        });
+
+    }
+
+    function changeMiniTextEditorXYPosition(id: number) {
+        const index = miniTextEditor.value.findIndex((obj) => obj.id === id);
+
+        const x = (miniTextEditor.value[index].dragPosition.x = startX);
+        const y = (miniTextEditor.value[index].dragPosition.y = startY);
+
+        yDocStore.doc.transact(function () {
+            const trackminiTextEditor = yArrayMiniTextEditor.value.get(index);
+
+            if (trackminiTextEditor) {
+                trackminiTextEditor.dragPosition.y = y;
+                trackminiTextEditor.dragPosition.x = x;
+            }
+            yArrayMiniTextEditor.value.delete(index);
+            yArrayMiniTextEditor.value.insert(index, [trackminiTextEditor]);
+        });
+    }
+
+    function changeMiniTextEditorResizeXYPosition(id: number) {
+        const index = miniTextEditor.value.findIndex((obj) => obj.id === id);
+
+        // const x = (miniTextEditor.value[index].resizePosition.x = newResizeX);
+        const y = (miniTextEditor.value[index].resizePosition.y = newMiniTextEditorHeight);
+
+        yDocStore.doc.transact(function () {
+            const trackminiTextEditor = yArrayMiniTextEditor.value.get(index);
+
+            if (trackminiTextEditor) {
+                trackminiTextEditor.resizePosition.y = y;
+            }
+            yArrayMiniTextEditor.value.delete(index);
+            yArrayMiniTextEditor.value.insert(index, [trackminiTextEditor]);
+        });
+    }
+
 
     function getRandomColorClass() {
         const colorClasses = [
@@ -50,8 +140,14 @@ export function useDragMiniTextEditor() {
         return colorClasses[randomIndex];
     }
 
-    function deleteMiniTextEditor(miniTextEditor: IMiniTextEditor) {
-        console.log("deleteMiniTextEditor", miniTextEditor);
+    function deleteMiniTextEditor(_miniTextEditor: IMiniTextEditor) {
+       
+        const index = miniTextEditor.value.findIndex(
+            (obj) => obj.id === _miniTextEditor.id
+        );
+        miniTextEditor.value.splice(index, index);
+
+        yArrayMiniTextEditor.value.delete(index);
     }
 
     function dragMiniTextEditor(id: number) {
@@ -65,18 +161,7 @@ export function useDragMiniTextEditor() {
             ".text-editor-resizer-" + id
         ) as HTMLElement;
 
-        let newX = 0,
-            newY = 0,
-            startX = 0,
-            startY = 0;
-
-        let newRX = 0,
-            newRY = 0,
-            startRX = 0,
-            startRY = 0;
-
-        let miniTextEditorStartwidth = 0,
-            miniTextEditorStartHeight = 0;
+      
 
         // dragging
         // resizing
@@ -100,6 +185,10 @@ export function useDragMiniTextEditor() {
                 const newWidth = miniTextEditorStartwidth + e.clientX - startRX;
                 const newHeight =
                     miniTextEditorStartHeight + e.clientY - startRY;
+
+                    newMiniTextEditorHeight=newHeight
+
+                    changeMiniTextEditorResizeXYPosition(id);
 
                 // miniTextEditor.style.width = Math.max(newWidth, 150) + "px";
                 miniTextEditor.style.height = Math.max(newHeight, 100) + "px";
@@ -128,6 +217,8 @@ export function useDragMiniTextEditor() {
 
                 startX = e.clientX;
                 startY = e.clientY;
+
+                changeMiniTextEditorXYPosition(id);
 
                 miniTextEditor.style.top =
                     miniTextEditor.offsetTop - newY + "px";
@@ -161,5 +252,9 @@ export function useDragMiniTextEditor() {
         createMiniTextEditor,
         deleteMiniTextEditor,
         miniTextEditor,
+        yArrayMiniTextEditor,
+      
+        miniTextEditorHasEventSet,
+        changeMiniTextEditorBodyContent,
     };
 }

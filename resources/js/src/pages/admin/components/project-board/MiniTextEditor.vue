@@ -14,6 +14,12 @@ const emit=defineEmits<{ (e: "deleteMiniTextEditor", miniTextEditor: IMiniTextEd
     <div
     v-for="miniTextEditor in miniTextEditors"
     :key="miniTextEditor.id"
+    :style="{
+            top: miniTextEditor.dragPosition.y + 'px',
+            left: miniTextEditor.dragPosition.x + 'px',
+            // width: stickyNote.resizePosition.x + 'px',
+            height: miniTextEditor.resizePosition.y + 'px',
+        }"
         :class="'flex flex-col  min-h-40 w-[350px] shadow-md p-1 rounded-md cursor-pointer text-editor-'+miniTextEditor.id"
     >
         <div class="card-header flex justify-between">
@@ -70,10 +76,10 @@ const emit=defineEmits<{ (e: "deleteMiniTextEditor", miniTextEditor: IMiniTextEd
         </div>
 
         <div
-            class="card-body w-full h-full p-2 bg-white"
+            :class="'card-body w-full h-full p-2 bg-white text-editor-body-'+miniTextEditor.id"
             contenteditable="true"
         >
-            content here...
+            {{miniTextEditor.body}}
         </div>
         <div class="flex justify-end">
             <div :class="'cursor-nw-resize text-editor-resizer-'+miniTextEditor.id">

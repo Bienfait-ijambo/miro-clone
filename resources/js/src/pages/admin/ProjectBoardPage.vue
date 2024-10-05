@@ -3,17 +3,12 @@ import { App } from "../../app/app";
 import AddItem from "./components/project-board/AddItem.vue";
 import ColorPalette from "./components/project-board/ColorPalette.vue";
 import UndoRedo from "./components/project-board/UndoRedo.vue";
-
 import { useDragStickyNote } from "./actions/project-board/stickyNote";
 import StickyNote from "./components/project-board/StickyNote.vue";
 import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
-import { onMounted, Ref } from "vue";
+import { onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-import { IndexeddbPersistence } from "y-indexeddb";
-import {initYjs} from '../../yjs/yjs'
-
+import { initYjs } from "../../yjs/yjs";
 
 const {
     dragStickyNote,
@@ -22,10 +17,9 @@ const {
     deleteStickyNote,
 
     yArrayStickyNote,
-        doc ,
-        stickyNoteHasEventSet,
-        changeStickyNoteBodyContent,
 
+    stickyNoteHasEventSet,
+    changeStickyNoteBodyContent,
 } = useDragStickyNote();
 
 const {
@@ -33,6 +27,10 @@ const {
     createMiniTextEditor,
     deleteMiniTextEditor,
     miniTextEditor,
+    yArrayMiniTextEditor,
+
+    miniTextEditorHasEventSet,
+    changeMiniTextEditorBodyContent,
 } = useDragMiniTextEditor();
 
 function changeStickyNoteColor(stickyNoteId: number, color: string) {
@@ -51,16 +49,23 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 
-
 onMounted(() => {
-    initYjs({
-        yArrayStickyNote,
-        doc ,
-        stickyNoteHasEventSet,
-        changeStickyNoteBodyContent,
-        stickyNote,
-        dragStickyNote
-    },{})
+    initYjs(
+        {
+            yArrayStickyNote,
+            stickyNoteHasEventSet,
+            changeStickyNoteBodyContent,
+            stickyNote,
+            dragStickyNote,
+        },
+        {
+            yArrayMiniTextEditor,
+            miniTextEditorHasEventSet,
+            changeMiniTextEditorBodyContent,
+            dragMiniTextEditor,
+            miniTextEditor,
+        }
+    );
 });
 </script>
 <template>

@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import { IStickyNote } from "./stickyNoteTypes";
 import { stickyNoteStore } from "../../../../store/stickyNote";
+import { yDocStore } from "../../../../store/yDoc";
 
 export function useDragStickyNote() {
     let newX = 0,
@@ -20,13 +21,11 @@ export function useDragStickyNote() {
     const stickyNote = ref<IStickyNote[]>([] as IStickyNote[]);
     let count = 0;
 
-    const doc = ref();
+    // const doc = ref();
 
     const yArrayStickyNote = ref();
 
     const stickyNoteHasEventSet = new Set<number>();
-
-    
 
     function changeStickyNoteBodyContent(id: number) {
         const stickyNoteContent = document.querySelector(
@@ -35,7 +34,7 @@ export function useDragStickyNote() {
         const index = stickyNote.value.findIndex((obj) => obj.id === id);
 
         stickyNoteContent.addEventListener("keydown", function () {
-            doc.value.transact(function () {
+            yDocStore.doc.transact(function () {
                 const trackStickyNote = yArrayStickyNote.value.get(index);
 
                 if (trackStickyNote) {
@@ -53,7 +52,7 @@ export function useDragStickyNote() {
         const x = (stickyNote.value[index].resizePosition.x = newResizeX);
         const y = (stickyNote.value[index].resizePosition.y = newResizeY);
 
-        doc.value.transact(function () {
+        yDocStore.doc.transact(function () {
             const trackStickyNote = yArrayStickyNote.value.get(index);
 
             if (trackStickyNote) {
@@ -71,7 +70,7 @@ export function useDragStickyNote() {
         const x = (stickyNote.value[index].dragPosition.x = startX);
         const y = (stickyNote.value[index].dragPosition.y = startY);
 
-        doc.value.transact(function () {
+        yDocStore.doc.transact(function () {
             const trackStickyNote = yArrayStickyNote.value.get(index);
 
             if (trackStickyNote) {
@@ -224,15 +223,12 @@ export function useDragStickyNote() {
         dragStickyNote,
         createStickyNote,
         stickyNote,
-      
+
         deleteStickyNote,
 
-
         yArrayStickyNote,
-        doc ,
+
         stickyNoteHasEventSet,
         changeStickyNoteBodyContent,
-        
-
     };
 }
