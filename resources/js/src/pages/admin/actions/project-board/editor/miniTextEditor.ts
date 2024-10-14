@@ -3,43 +3,36 @@ import { IMiniTextEditor } from "../miniTextEditorTypes";
 import { miniTextEditorStore } from "../../../../../store/miniTextEditor";
 import { useEditor } from "./editor";
 import { yDocStore } from "../../../../../store/yDoc";
+import { __debounce } from "../../../../../helper/util";
 
 export function useDragMiniTextEditor() {
     const {
-        applyBold,
-        applyItalic,
-        applyUnderline,
-        applyTag,
-        insertImage,
-        applyAlignment,
-        applyLink,
-        applyUnOrderedList,
+       
+        initMiniTextEditor
     } = useEditor();
-    const miniTextEditor = ref<IMiniTextEditor[]>([] as IMiniTextEditor[]);
+
     let count = 0;
 
     let newX = 0,
-    newY = 0,
-    startX = 0,
-    startY = 0;
+        newY = 0,
+        startX = 0,
+        startY = 0;
 
-let newMiniTextEditorHeight = 0,
-    startRX = 0,
-    startRY = 0;
+    let newMiniTextEditorHeight = 0,
+        startRX = 0,
+        startRY = 0;
 
-let miniTextEditorStartwidth = 0,
-    miniTextEditorStartHeight = 0;
+    let miniTextEditorStartwidth = 0,
+        miniTextEditorStartHeight = 0;
 
     
-    const yArrayMiniTextEditor = ref();
-
     const miniTextEditorHasEventSet = new Set<number>();
 
     function createMiniTextEditor() {
         count++;
         const color = getRandomColorClass();
 
-        miniTextEditor.value.push({
+        yDocStore.miniTextEditor.push({
             id: count,
             body: "",
             color: color,
@@ -53,81 +46,136 @@ let miniTextEditorStartwidth = 0,
             },
         });
 
-
-        yArrayMiniTextEditor.value.insert(0,[{
-            id: count,
-            body: "",
-            color: color,
-            resizePosition: {
-                x: 0,
-                y: newMiniTextEditorHeight,
+        yDocStore.yArrayMiniTextEditor.insert(0, [
+            {
+                id: count,
+                body: " ",
+                color: color,
+                resizePosition: {
+                    x: 0,
+                    y: newMiniTextEditorHeight,
+                },
+                dragPosition: {
+                    x: 0,
+                    y: 0,
+                },
             },
-            dragPosition: {
-                x: 0,
-                y: 0,
-            },
-        }]);
+        ]);
 
         miniTextEditorStore.miniTextEditor.id = count;
         setTimeout(() => dragMiniTextEditor(count), 200);
     }
 
-    function changeMiniTextEditorBodyContent(id:number){
 
+    const _modifyMiniTextEditor= __debounce(function(fn:(...args: any[]) => void){
+            fn()
+    }, 2000);
+  
+
+    function getCursorPosition(editor:HTMLElement){
+        const selection=window.getSelection() as Selection;
+        
+        if(selection?.rangeCount>0){
+            const range=selection.getRangeAt(0) as Range
+            const cloneRange=range.cloneRange()
+            cloneRange.selectNodeContents(editor)
+            cloneRange.setEnd(range.endContainer,range.endOffset)
+            const cursorPosition=cloneRange.toString().length
+            return cursorPosition
+
+            
+        }
+    }
+  
+    
+
+   
+    
+
+
+    function changeMiniTextEditorBodyContent(id: number) {
         const miniTextEditorContent = document.querySelector(
             ".text-editor-body-" + id
         ) as HTMLElement;
-        const index = miniTextEditor.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.miniTextEditor.findIndex(
+            (obj) => obj.id === id
+        );
 
         miniTextEditorContent.addEventListener("keydown", function () {
-            yDocStore.doc.transact(function () {
-                const trackminiTextEditor = yArrayMiniTextEditor.value.get(index);
 
-                if (trackminiTextEditor) {
-                    trackminiTextEditor.body = miniTextEditorContent.textContent;
-                }
-                yArrayMiniTextEditor.value.delete(index);
-                yArrayMiniTextEditor.value.insert(index, [trackminiTextEditor]);
-            });
+            const cursorPos=getCursorPosition(miniTextEditorContent)
+            console.log(cursorPos)
+
+            _modifyMiniTextEditor(_changeMiniTextEditorContent)
+
+            function _changeMiniTextEditorContent(){
+            
+                yDocStore.doc.transact(function () {
+                    const trackminiTextEditor =
+                        yDocStore.yArrayMiniTextEditor.get(index);
+
+                    if (trackminiTextEditor) {
+                        trackminiTextEditor.body =
+                            miniTextEditorContent.innerHTML as string;
+                        
+                    }
+                    yDocStore.yArrayMiniTextEditor.delete(index);
+                    yDocStore.yArrayMiniTextEditor.insert(index, [
+                        trackminiTextEditor,
+                    ]);
+                });
+            
+            }
+
+          
+
+
+            
+            
         });
-
     }
 
     function changeMiniTextEditorXYPosition(id: number) {
-        const index = miniTextEditor.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.miniTextEditor.findIndex(
+            (obj) => obj.id === id
+        );
 
-        const x = (miniTextEditor.value[index].dragPosition.x = startX);
-        const y = (miniTextEditor.value[index].dragPosition.y = startY);
+        const x = (yDocStore.miniTextEditor[index].dragPosition.x = startX);
+        const y = (yDocStore.miniTextEditor[index].dragPosition.y = startY);
 
         yDocStore.doc.transact(function () {
-            const trackminiTextEditor = yArrayMiniTextEditor.value.get(index);
+            const trackminiTextEditor =
+                yDocStore.yArrayMiniTextEditor.get(index);
 
             if (trackminiTextEditor) {
                 trackminiTextEditor.dragPosition.y = y;
                 trackminiTextEditor.dragPosition.x = x;
             }
-            yArrayMiniTextEditor.value.delete(index);
-            yArrayMiniTextEditor.value.insert(index, [trackminiTextEditor]);
+            yDocStore.yArrayMiniTextEditor.delete(index);
+            yDocStore.yArrayMiniTextEditor.insert(index, [trackminiTextEditor]);
         });
     }
 
     function changeMiniTextEditorResizeXYPosition(id: number) {
-        const index = miniTextEditor.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.miniTextEditor.findIndex(
+            (obj) => obj.id === id
+        );
 
-        // const x = (miniTextEditor.value[index].resizePosition.x = newResizeX);
-        const y = (miniTextEditor.value[index].resizePosition.y = newMiniTextEditorHeight);
+        // const x = (yDocStore.miniTextEditor[index].resizePosition.x = newResizeX);
+        const y = (yDocStore.miniTextEditor[index].resizePosition.y =
+            newMiniTextEditorHeight);
 
         yDocStore.doc.transact(function () {
-            const trackminiTextEditor = yArrayMiniTextEditor.value.get(index);
+            const trackminiTextEditor =
+                yDocStore.yArrayMiniTextEditor.get(index);
 
             if (trackminiTextEditor) {
                 trackminiTextEditor.resizePosition.y = y;
             }
-            yArrayMiniTextEditor.value.delete(index);
-            yArrayMiniTextEditor.value.insert(index, [trackminiTextEditor]);
+            yDocStore.yArrayMiniTextEditor.delete(index);
+            yDocStore.yArrayMiniTextEditor.insert(index, [trackminiTextEditor]);
         });
     }
-
 
     function getRandomColorClass() {
         const colorClasses = [
@@ -141,13 +189,12 @@ let miniTextEditorStartwidth = 0,
     }
 
     function deleteMiniTextEditor(_miniTextEditor: IMiniTextEditor) {
-       
-        const index = miniTextEditor.value.findIndex(
+        const index = yDocStore.miniTextEditor.findIndex(
             (obj) => obj.id === _miniTextEditor.id
         );
-        miniTextEditor.value.splice(index, index);
+        yDocStore.miniTextEditor.splice(index, index);
 
-        yArrayMiniTextEditor.value.delete(index);
+        yDocStore.yArrayMiniTextEditor.delete(index);
     }
 
     function dragMiniTextEditor(id: number) {
@@ -160,14 +207,11 @@ let miniTextEditorStartwidth = 0,
         const miniTextEditorResizer = document.querySelector(
             ".text-editor-resizer-" + id
         ) as HTMLElement;
-
-      
-
         // dragging
         // resizing
 
         //resizing
-        miniTextEditorResizer.addEventListener("mousedown", function (e: any) {
+        miniTextEditorResizer.addEventListener("mousedown", function (e:MouseEvent) {
             miniTextEditorStore.miniTextEditor.id = id;
 
             startRX = e.clientX;
@@ -181,20 +225,19 @@ let miniTextEditorStartwidth = 0,
             document.addEventListener("mousemove", mouseMove);
             document.addEventListener("mouseup", mouseUp);
 
-            function mouseMove(e: any) {
+            function mouseMove(e: MouseEvent) {
                 const newWidth = miniTextEditorStartwidth + e.clientX - startRX;
                 const newHeight =
                     miniTextEditorStartHeight + e.clientY - startRY;
 
-                    newMiniTextEditorHeight=newHeight
+                newMiniTextEditorHeight = newHeight;
 
-                    changeMiniTextEditorResizeXYPosition(id);
+                changeMiniTextEditorResizeXYPosition(id);
 
-                // miniTextEditor.style.width = Math.max(newWidth, 150) + "px";
                 miniTextEditor.style.height = Math.max(newHeight, 100) + "px";
             }
 
-            function mouseUp(e: any) {
+            function mouseUp(e: MouseEvent) {
                 document.removeEventListener("mousemove", mouseMove);
             }
         });
@@ -231,29 +274,15 @@ let miniTextEditorStartwidth = 0,
             }
         });
 
-        applyBold(id);
-        applyItalic(id);
-        applyUnderline(id);
-        applyTag(id, "h1");
-        applyTag(id, "h2");
-        applyTag(id, "h3");
-        applyAlignment(id, "left");
-        applyAlignment(id, "right");
-        applyAlignment(id, "center");
-        applyUnOrderedList(id);
-        applyLink(id);
-        insertImage(id);
+       
+        initMiniTextEditor(id)
     }
-
-    // return { dragminiTextEditor,createminiTextEditor ,miniTextEditor,deleteminiTextEditor};
 
     return {
         dragMiniTextEditor,
         createMiniTextEditor,
         deleteMiniTextEditor,
-        miniTextEditor,
-        yArrayMiniTextEditor,
-      
+
         miniTextEditorHasEventSet,
         changeMiniTextEditorBodyContent,
     };

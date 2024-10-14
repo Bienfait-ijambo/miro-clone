@@ -9,6 +9,10 @@ import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
 import { onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 import { initYjs } from "../../yjs/yjs";
+import { yDocStore } from "../../store/yDoc";
+import { useShareUserCursor } from "./actions/project-board/cursor/userCursor";
+import UserCursor from "./components/project-board/UserCursor.vue";
+const {trackMousePosition}=useShareUserCursor()
 
 const {
     dragStickyNote,
@@ -26,9 +30,8 @@ const {
     dragMiniTextEditor,
     createMiniTextEditor,
     deleteMiniTextEditor,
-    miniTextEditor,
-    yArrayMiniTextEditor,
-
+    // miniTextEditor,
+    // yArrayMiniTextEditor,
     miniTextEditorHasEventSet,
     changeMiniTextEditorBodyContent,
 } = useDragMiniTextEditor();
@@ -42,12 +45,13 @@ function changeStickyNoteColor(stickyNoteId: number, color: string) {
 }
 
 function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
-    for (let i = 0; i < miniTextEditor.value.length; i++) {
-        if (miniTextEditor.value[i].id === miniTextEditorId) {
-            miniTextEditor.value[i].color = color;
+    for (let i = 0; i < yDocStore.miniTextEditor.length; i++) {
+        if (yDocStore.miniTextEditor[i].id === miniTextEditorId) {
+            yDocStore.miniTextEditor[i].color = color;
         }
     }
 }
+
 
 onMounted(() => {
     initYjs(
@@ -59,17 +63,18 @@ onMounted(() => {
             dragStickyNote,
         },
         {
-            yArrayMiniTextEditor,
+            // yArrayMiniTextEditor,
             miniTextEditorHasEventSet,
             changeMiniTextEditorBodyContent,
             dragMiniTextEditor,
-            miniTextEditor,
+            // miniTextEditor,
         }
     );
 });
 </script>
 <template>
-    <div class="bg-slate-100">
+    <!-- @mousemove="trackMousePosition" -->
+    <div class="bg-slate-100"  >
         <div class="flex">
             <div class="bg-slate-200 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">
@@ -130,10 +135,15 @@ onMounted(() => {
                     <MiniTextEditor
                         @changeMiniTextEditorColor="changeMiniTextEditorColor"
                         @deleteMiniTextEditor="deleteMiniTextEditor"
-                        :miniTextEditors="miniTextEditor"
+                        :miniTextEditors="yDocStore.miniTextEditor"
                     />
+
+                    <UserCursor :mouse-position="yDocStore.mousePosition"/>
+
+                  
                 </div>
-                {{ stickyNote }}
+                <!-- {{ stickyNote }} -->
+                  <!-- {{ yDocStore.miniTextEditor }} -->
             </div>
         </div>
     </div>

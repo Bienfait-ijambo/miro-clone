@@ -13,6 +13,9 @@
       
           @vite([ 'resources/js/app.ts','resources/css/app.css'])
     </body>
+
+   
+
     
 
 </html>

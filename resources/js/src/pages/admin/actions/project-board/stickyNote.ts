@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { IStickyNote } from "./stickyNoteTypes";
 import { stickyNoteStore } from "../../../../store/stickyNote";
 import { yDocStore } from "../../../../store/yDoc";
+import { __debounce } from "../../../../helper/util";
 
 export function useDragStickyNote() {
     let newX = 0,
@@ -21,11 +22,16 @@ export function useDragStickyNote() {
     const stickyNote = ref<IStickyNote[]>([] as IStickyNote[]);
     let count = 0;
 
-    // const doc = ref();
-
     const yArrayStickyNote = ref();
 
     const stickyNoteHasEventSet = new Set<number>();
+
+
+    
+    const _modifyStickyNote=__debounce(function(fn:(...args: any[]) => void){
+        fn()
+        
+    }, 1000);
 
     function changeStickyNoteBodyContent(id: number) {
         const stickyNoteContent = document.querySelector(
@@ -34,6 +40,10 @@ export function useDragStickyNote() {
         const index = stickyNote.value.findIndex((obj) => obj.id === id);
 
         stickyNoteContent.addEventListener("keydown", function () {
+
+            _modifyStickyNote(_changeStickyNoteContent)
+            
+           function _changeStickyNoteContent(){
             yDocStore.doc.transact(function () {
                 const trackStickyNote = yArrayStickyNote.value.get(index);
 
@@ -43,6 +53,7 @@ export function useDragStickyNote() {
                 yArrayStickyNote.value.delete(index);
                 yArrayStickyNote.value.insert(index, [trackStickyNote]);
             });
+           }
         });
     }
 

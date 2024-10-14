@@ -15,6 +15,7 @@ const emit = defineEmits<{
         v-for="stickyNote in stickyNotes"
         :key="stickyNote.id"
         :style="{
+             position: 'absolute',
             top: stickyNote.dragPosition.y + 'px',
             left: stickyNote.dragPosition.x + 'px',
             width: stickyNote.resizePosition.x + 'px',
