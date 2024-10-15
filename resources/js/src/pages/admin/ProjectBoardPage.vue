@@ -10,7 +10,7 @@ import { onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 import { initYjs } from "../../yjs/yjs";
 import { yDocStore } from "../../store/yDoc";
-import { useShareUserCursor } from "./actions/project-board/cursor/userCursor";
+import { useShareUserCursor } from "./actions/project-board/cursor/userMouse";
 import UserCursor from "./components/project-board/UserCursor.vue";
 const {trackMousePosition}=useShareUserCursor()
 
@@ -73,7 +73,7 @@ onMounted(() => {
 });
 </script>
 <template>
-    <!-- @mousemove="trackMousePosition" -->
+    <!--@mousemove="trackMousePosition"  -->
     <div class="bg-slate-100"  >
         <div class="flex">
             <div class="bg-slate-200 h-screen w-[50px]">

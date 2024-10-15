@@ -27,18 +27,19 @@ export async function initYjs(
     initYjsTypesForStickyNote(stickyNoteParam);
     initYjsTypesForMiniTextEditor(miniTextEditorParam);
     initYjsTypesForCursor()
+    initYjsTypesForMouse()
+    
    
     // this allows you to instantly get the (cached) documents data
     const indexeddbProvider = new IndexeddbPersistence(
-        "sticky-note",
+        "sticky-note-x",
         yDocStore.doc
     );
-    await indexeddbProvider.whenSynced
-    // indexeddbProvider.whenSynced.then(() => {
-    //     console.log("loaded data from indexed db");
-    // });
+    indexeddbProvider.whenSynced.then(() => {
+        console.log("loaded data from indexed db");
+    });
 
-    new WebsocketProvider("ws://localhost:1234", "sticky-note", yDocStore.doc);
+    new WebsocketProvider("ws://localhost:1234", "sticky-note-x", yDocStore.doc);
 }
 
 function initYjsTypesForMiniTextEditor(
@@ -111,72 +112,35 @@ function initYjsTypesForStickyNote(stickyNoteParam: IStickyNoteParams) {
 }
 
 
+function initYjsTypesForMouse() {
+    yDocStore.yMouse = yDocStore.doc.getMap("y-mouse");
+
+    yDocStore.yMouse.observe((event: any) => {
+  
+            yDocStore.mousePosition.x = yDocStore.yMouse.get('x') as number
+            yDocStore.mousePosition.y = yDocStore.yMouse.get('y')  as number
+        
+    });
+
+
+
+    
+}
+
+
 function initYjsTypesForCursor() {
     yDocStore.yCursor = yDocStore.doc.getMap("y-cursor");
 
     yDocStore.yCursor.observe((event: any) => {
   
-            yDocStore.mousePosition.x = yDocStore.yCursor.get('x') as number
-            yDocStore.mousePosition.y = yDocStore.yCursor.get('y')  as number
+            yDocStore.cursor.x = yDocStore.yCursor.get('x') as string
+            yDocStore.cursor.y = yDocStore.yCursor.get('y')  as string
         
     });
+
+
+
+    
 }
 
 
-
-
-function moveCursorToPosition(position:number) {
-    console.log('move...', position)
-
-    const editor = document.querySelector(".text-editor-body-1") as any;
-    // console.log('we move it',position)
-    // const editor = document.getElementById('editor');
-    const selection = window.getSelection() as Selection
-    const range = document.createRange() as Range
-
-    let currentPos = 0;
-    let node;
-
-    // Iterate over child nodes to find the correct text node
-    for (let i = 0; i < editor.childNodes.length; i++) {
-        node = editor.childNodes[i];
-        const nodeLength = node.textContent.length;
-
-        if (currentPos + nodeLength >= position) {
-            // If it's a text node, set the cursor directly
-            if (node.nodeType === Node.TEXT_NODE) {
-                range.setStart(node, position - currentPos);
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
-                // For element nodes, recursively go inside its child nodes to find the correct position
-                setCursorInsideElement(node, position - currentPos, range);
-            }
-            break;
-        } else {
-            currentPos += nodeLength;
-        }
-    }
-
-    range.collapse(true); // Collapse the range to the start (move the cursor there)
-    selection.removeAllRanges(); // Clear any existing selections
-    selection.addRange(range); // Set the new range (moves the cursor)
-    editor.focus(); // Ensure the contenteditable div has focus
-}
-
-// Helper function to set cursor inside nested elements
-function setCursorInsideElement(element:any, position:number, range:any) {
-    for (let i = 0; i < element.childNodes.length; i++) {
-        let child = element.childNodes[i];
-        let length = child.textContent.length;
-
-        if (position <= length) {
-            if (child.nodeType === Node.TEXT_NODE) {
-                range.setStart(child, position);
-            } else {
-                setCursorInsideElement(child, position, range); // Recursive for nested elements
-            }
-            break;
-        } else {
-            position -= length;
-        }
-    }
-}

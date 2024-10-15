@@ -4,8 +4,8 @@ export function useShareUserCursor() {
 
         yDocStore.mousePosition.x = event.clientX;
         yDocStore.mousePosition.y = event.clientY;
-        yDocStore.yCursor.set("x", event.clientX);
-        yDocStore.yCursor.set("y", event.clientY);
+        yDocStore.yMouse.set("x", event.clientX);
+        yDocStore.yMouse.set("y", event.clientY);
     }
 
     return {

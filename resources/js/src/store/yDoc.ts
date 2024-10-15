@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
 import * as Y from "yjs";
 import { IMiniTextEditor } from '../pages/admin/actions/project-board/miniTextEditorTypes';
+export interface ICursor{
+  cursorPosition: number;
+  x: string
+  y:string
+}
 const useYDocStore = defineStore('y-doc', {
   state: () => ({
     doc:new Y.Doc(),
@@ -11,8 +16,15 @@ const useYDocStore = defineStore('y-doc', {
       x:0,
       y:0
     },
+    yMouse:new Y.Map,
+
     yCursor:new Y.Map,
-    cursorPosition:0
+    cursor:{
+      cursorPosition:0,
+      x:'',
+      y:''
+    }
+   
   }),
 
 
