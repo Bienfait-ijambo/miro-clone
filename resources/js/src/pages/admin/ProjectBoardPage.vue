@@ -73,8 +73,8 @@ onMounted(() => {
 });
 </script>
 <template>
-    <!--@mousemove="trackMousePosition"  -->
-    <div class="bg-slate-100"  >
+   
+    <div class="bg-slate-100" @mousemove="trackMousePosition" >
         <div class="flex">
             <div class="bg-slate-200 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">

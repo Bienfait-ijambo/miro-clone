@@ -62,12 +62,9 @@ export function useDragMiniTextEditor() {
         setTimeout(() => dragMiniTextEditor(count), 200);
     }
 
-    const _modifyMiniTextEditor = __debounce(function (
-        fn: (...args: any[]) => void
-    ) {
+    const _modifyMiniTextEditor = __debounce(function ( fn: (...args: any[]) => void ) {
         fn();
-    },
-    2000);
+    },1500);
 
     function getCursorPosition(
         editor: HTMLElement,
@@ -147,9 +144,7 @@ export function useDragMiniTextEditor() {
         }
     }
 
-    async function runFuncSequentially(
-        functions: (() => any | Promise<any>)[]
-    ) {
+    async function runFuncSequentially( functions: (() => any | Promise<any>)[] ) {
         for (const func of functions) {
             await func();
         }
@@ -161,26 +156,18 @@ export function useDragMiniTextEditor() {
         ) as HTMLElement;
         const index = yDocStore.miniTextEditor.findIndex(
             (obj) => obj.id === id
-        );
+        ); 
+        
+        miniTextEditorContent.addEventListener( "keydown", _changeMiniTextEditorContentOnEvent );
+        miniTextEditorContent.addEventListener( "mouseup", _changeMiniTextEditorContentOnEvent );
 
-        miniTextEditorContent.addEventListener(
-            "keydown",
-            _changeMiniTextEditorContentOnEvent
-        );
-        miniTextEditorContent.addEventListener(
-            "mouseup",
-            _changeMiniTextEditorContentOnEvent
-        );
 
         function _changeMiniTextEditorContentOnEvent() {
             const blinkingCursor = document.querySelector(
                 ".blinking-cursor-" + id
             ) as HTMLElement;
             blinkingCursor.style.display = "block";
-            const { cursorPosition, x, y } = getCursorPosition(
-                miniTextEditorContent,
-                blinkingCursor
-            );
+            const { cursorPosition, x, y } = getCursorPosition( miniTextEditorContent, blinkingCursor );
 
             yDocStore.cursor.cursorPosition = cursorPosition;
             yDocStore.cursor.x = x;
@@ -206,7 +193,6 @@ export function useDragMiniTextEditor() {
 
             const func1 = () => {
                 return new Promise((resolve, reject) => {
-                    // const cursorPos=getCursorPosition(miniTextEditorContent,blinkingCursor) as number
                     yDocStore.cursor.cursorPosition = cursorPosition;
                     _changeMiniTextEditorContent();
                     resolve(null);

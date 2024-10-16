@@ -3,7 +3,6 @@ import { WebsocketProvider } from "y-websocket";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { Ref } from "vue";
 import { IStickyNote } from "../pages/admin/actions/project-board/stickyNoteTypes";
-import { IMiniTextEditor } from "../pages/admin/actions/project-board/miniTextEditorTypes";
 import { yDocStore } from "../store/yDoc";
 
 export interface IStickyNoteParams {
@@ -57,6 +56,9 @@ function initYjsTypesForMiniTextEditor(
     );
 
     yDocStore.yArrayMiniTextEditor.observe((event: any) => {
+
+
+        
         yDocStore.miniTextEditor = yDocStore.yArrayMiniTextEditor.toArray();
         
 
