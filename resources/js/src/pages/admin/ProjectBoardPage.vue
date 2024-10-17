@@ -12,7 +12,12 @@ import { initYjs } from "../../yjs/yjs";
 import { yDocStore } from "../../store/yDoc";
 import { useShareUserCursor } from "./actions/project-board/cursor/userMouse";
 import UserCursor from "./components/project-board/UserCursor.vue";
-const {trackMousePosition}=useShareUserCursor()
+ import {useDrawOnCanvas} from './actions/project-board/canvas/canvas'
+
+
+ const {drawOnCanvas}=useDrawOnCanvas()
+
+const { trackMousePosition } = useShareUserCursor();
 
 const {
     dragStickyNote,
@@ -36,6 +41,7 @@ const {
     changeMiniTextEditorBodyContent,
 } = useDragMiniTextEditor();
 
+
 function changeStickyNoteColor(stickyNoteId: number, color: string) {
     for (let i = 0; i < stickyNote.value.length; i++) {
         if (stickyNote.value[i].id === stickyNoteId) {
@@ -52,8 +58,10 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 
-
 onMounted(() => {
+
+    setTimeout(() => drawOnCanvas(),1000)
+
     initYjs(
         {
             yArrayStickyNote,
@@ -73,8 +81,8 @@ onMounted(() => {
 });
 </script>
 <template>
-   
-    <div class="bg-slate-100" @mousemove="trackMousePosition" >
+    <!-- @mousemove="trackMousePosition" -->
+    <div class="bg-slate-100" >
         <div class="flex">
             <div class="bg-slate-200 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">
@@ -125,9 +133,19 @@ onMounted(() => {
                         </button>
                     </div>
                 </div>
+                <!-- {{ yDocStore.drawingArray }} -->
+                <canvas
+                    width="1200"
+                    height="800"
+                    style="
+                        background-color: gainsboro;
+                       
+                        z-index: -1000;
+                    "
+                ></canvas>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
-                    <!-- list of ceated projects  -->
+                    <!-- list of ceated projects #e2e8f0; -->
                     <StickyNote
                         @deleteStickyNote="deleteStickyNote"
                         :sticky-notes="stickyNote"
@@ -138,12 +156,10 @@ onMounted(() => {
                         :miniTextEditors="yDocStore.miniTextEditor"
                     />
 
-                    <UserCursor :mouse-position="yDocStore.mousePosition"/>
-
-                  
+                    <UserCursor :mouse-position="yDocStore.mousePosition" />
                 </div>
                 <!-- {{ stickyNote }} -->
-                  <!-- {{ yDocStore.miniTextEditor }} -->
+                <!-- {{ yDocStore.miniTextEditor }} -->
             </div>
         </div>
     </div>

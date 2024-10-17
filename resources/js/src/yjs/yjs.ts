@@ -27,6 +27,7 @@ export async function initYjs(
     initYjsTypesForMiniTextEditor(miniTextEditorParam);
     initYjsTypesForCursor()
     initYjsTypesForMouse()
+    initYjsTypesDrawing()
     
    
     // this allows you to instantly get the (cached) documents data
@@ -123,10 +124,7 @@ function initYjsTypesForMouse() {
             yDocStore.mousePosition.y = yDocStore.yMouse.get('y')  as number
         
     });
-
-
-
-    
+   
 }
 
 
@@ -146,3 +144,19 @@ function initYjsTypesForCursor() {
 }
 
 
+
+
+
+function initYjsTypesDrawing(
+) {
+    
+    yDocStore.yArrayDrawing = yDocStore.doc.getArray(
+        "y-array-drawing"
+    );
+
+    yDocStore.yArrayDrawing.observe((event: any) => {
+        console.log('modifying y-array-drawing...')
+
+
+    });
+}
