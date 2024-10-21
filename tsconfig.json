@@ -20,7 +20,7 @@
       "resources/js/**/*.ts",
       "resources/js/**/*.d.ts",
       "resources/js/**/*.vue",
-      "resources/js/app.ts",
+      "resources/js/app.ts", "public/worker/arrayWorker.js",
   ],
 
 }

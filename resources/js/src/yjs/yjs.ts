@@ -4,6 +4,11 @@ import { IndexeddbPersistence } from "y-indexeddb";
 import { Ref } from "vue";
 import { IStickyNote } from "../pages/admin/actions/project-board/stickyNoteTypes";
 import { yDocStore } from "../store/yDoc";
+import { useDrawOnCanvas } from "../pages/admin/actions/project-board/canvas/canvas";
+
+
+const {replayDrawing}=useDrawOnCanvas()
+
 
 export interface IStickyNoteParams {
     yArrayStickyNote: Ref<Y.Array<IStickyNote>>;
@@ -19,34 +24,81 @@ export interface IMiniTextEditorParams {
     dragMiniTextEditor: (...args: any[]) => void;
 }
 
+async function runFuncSequentially( functions: (() => any | Promise<any>)[] ) {
+    for (const func of functions) {
+        await func();
+    }
+}
+
 export async function initYjs(
     stickyNoteParam: IStickyNoteParams,
     miniTextEditorParam: IMiniTextEditorParams
 ) {
-    initYjsTypesForStickyNote(stickyNoteParam);
-    initYjsTypesForMiniTextEditor(miniTextEditorParam);
-    initYjsTypesForCursor()
-    initYjsTypesForMouse()
-    initYjsTypesDrawing()
-    
-   
+
+    const func1 = () => {
+        return new Promise((resolve, reject) => {
+            console.log('func1...')
+            initYjsTypesForStickyNote(stickyNoteParam);
+            resolve(null);
+        });
+    };
+    const func2 = () => {
+        return new Promise((resolve, reject) => {
+            console.log('func2...')
+
+            initYjsTypesForMiniTextEditor(miniTextEditorParam);
+            resolve(null);
+        });
+    };
+    const func3 = () => {
+        return new Promise((resolve, reject) => {
+            console.log('func3...')
+
+            initYjsTypesForCursor();
+            resolve(null);
+        });
+    };
+  
+    const func4 = () => {
+        return new Promise((resolve, reject) => {
+            console.log('func4...')
+
+            initYjsTypesForMouse();
+            resolve(null);
+        });
+    };
+
+    yDocStore.l=true
+    runFuncSequentially([func1, func2,func3,func4]).then(() => {
+        initYjsTypesDrawing();
+    yDocStore.l=false
+
+        console.log("All functions completed in sequence.");
+    });
+
+
+    // initYjsTypesForStickyNote(stickyNoteParam);
+    // initYjsTypesForMiniTextEditor(miniTextEditorParam);
+    // initYjsTypesForCursor();
+    // initYjsTypesForMouse();
+    // initYjsTypesDrawing();
+
     // this allows you to instantly get the (cached) documents data
     const indexeddbProvider = new IndexeddbPersistence(
-        "sticky-note-x",
+        "sticky-note-y",
         yDocStore.doc
     );
     indexeddbProvider.whenSynced.then(() => {
         console.log("loaded data from indexed db");
     });
 
-    new WebsocketProvider("ws://localhost:1234", "sticky-note-x", yDocStore.doc);
+    new WebsocketProvider( "ws://localhost:1234", "sticky-note-y", yDocStore.doc );
 }
 
 function initYjsTypesForMiniTextEditor(
     miniTextEditorParam: IMiniTextEditorParams
 ) {
     const {
-
         miniTextEditorHasEventSet,
         changeMiniTextEditorBodyContent,
         dragMiniTextEditor,
@@ -57,11 +109,7 @@ function initYjsTypesForMiniTextEditor(
     );
 
     yDocStore.yArrayMiniTextEditor.observe((event: any) => {
-
-
-        
         yDocStore.miniTextEditor = yDocStore.yArrayMiniTextEditor.toArray();
-        
 
         for (const item of yDocStore.miniTextEditor) {
             if (miniTextEditorHasEventSet.has(item.id) === false) {
@@ -69,12 +117,8 @@ function initYjsTypesForMiniTextEditor(
                 setTimeout(() => {
                     dragMiniTextEditor(item.id);
                     changeMiniTextEditorBodyContent(item.id);
-                    console.log('modify in observe...')
 
-                    const _miniTextEditor = document.querySelector(
-                        ".text-editor-" + item.id
-                    ) as HTMLElement;
-                    _miniTextEditor.style.position = "absolute";
+                    
                     //add an event on each sticky note
                 }, 1000);
             }
@@ -103,60 +147,38 @@ function initYjsTypesForStickyNote(stickyNoteParam: IStickyNoteParams) {
                     dragStickyNote(item.id);
                     changeStickyNoteBodyContent(item.id);
 
-                    const _stickyNote = document.querySelector(
-                        ".sticky-note-" + item.id
-                    ) as HTMLElement;
-                    _stickyNote.style.position = "absolute";
-                    //add an event on each sticky note
+                   
                 }, 2000);
             }
         }
     });
 }
 
-
 function initYjsTypesForMouse() {
     yDocStore.yMouse = yDocStore.doc.getMap("y-mouse");
 
     yDocStore.yMouse.observe((event: any) => {
-  
-            yDocStore.mousePosition.x = yDocStore.yMouse.get('x') as number
-            yDocStore.mousePosition.y = yDocStore.yMouse.get('y')  as number
-        
+        yDocStore.mousePosition.x = yDocStore.yMouse.get("x") as number;
+        yDocStore.mousePosition.y = yDocStore.yMouse.get("y") as number;
     });
-   
 }
-
 
 function initYjsTypesForCursor() {
     yDocStore.yCursor = yDocStore.doc.getMap("y-cursor");
 
     yDocStore.yCursor.observe((event: any) => {
-  
-            yDocStore.cursor.x = yDocStore.yCursor.get('x') as string
-            yDocStore.cursor.y = yDocStore.yCursor.get('y')  as string
-        
+        yDocStore.cursor.x = yDocStore.yCursor.get("x") as string;
+        yDocStore.cursor.y = yDocStore.yCursor.get("y") as string;
     });
-
-
-
-    
 }
 
-
-
-
-
-function initYjsTypesDrawing(
-) {
-    
-    yDocStore.yArrayDrawing = yDocStore.doc.getArray(
-        "y-array-drawing"
-    );
+function initYjsTypesDrawing() {
+    yDocStore.yArrayDrawing = yDocStore.doc.getArray("y-array-drawing");
 
     yDocStore.yArrayDrawing.observe((event: any) => {
-        console.log('modifying y-array-drawing...')
-
-
+        yDocStore.arrayDrawing=yDocStore.yArrayDrawing.toArray();
+        replayDrawing()
+        
+        console.log("modifying y-array-drawing...");
     });
 }

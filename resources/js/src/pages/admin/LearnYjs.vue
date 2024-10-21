@@ -62,14 +62,35 @@ function changeMargin() {
   yMap.value?.set("margin-left", margin.value.left);
 }
 
-// Initialize the Yjs document on component mount
+ 
+let sum=ref(0)
+const whiteArray = [1, 2, 3, 4, 5];
+
 onMounted(() => {
-  initYjs();
+  // Load the worker from the proxied URL
+  const worker = new Worker('/worker/arrayWorker.js');  // Path based on the proxy
+console.log('worker :',worker);
+  console.log('Posting data to the worker:', whiteArray);
+  worker.postMessage(whiteArray);  // Send the array to the worker
+
+  // Set up a listener for messages from the worker
+  worker.onmessage = (event) => {
+    console.log('Data received from worker:', event.data);
+    sum.value = event.data;  // Get the result from the worker
+  };
+
+  worker.onerror = (error) => {
+    console.error('Worker encountered an error:', error);
+  };
 });
 </script>
 
 <template>
   <div>
+
+    <h1>Array Sum: {{ sum }}</h1>
+    <!-- <button @click="calculateSum">Calculate Sum</button> -->
+
     <p :style="{ marginLeft: margin.left + 'px' }">Hello</p>
 
     <button @click="changeMargin" style="border: 1px solid blue">

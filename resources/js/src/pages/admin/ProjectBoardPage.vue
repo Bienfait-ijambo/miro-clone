@@ -12,10 +12,12 @@ import { initYjs } from "../../yjs/yjs";
 import { yDocStore } from "../../store/yDoc";
 import { useShareUserCursor } from "./actions/project-board/cursor/userMouse";
 import UserCursor from "./components/project-board/UserCursor.vue";
- import {useDrawOnCanvas} from './actions/project-board/canvas/canvas'
+import {
+    
+    useDrawOnCanvas,
+} from "./actions/project-board/canvas/canvas";
 
-
- const {drawOnCanvas}=useDrawOnCanvas()
+ const {drawOnCanvas,undo,redo}=useDrawOnCanvas();
 
 const { trackMousePosition } = useShareUserCursor();
 
@@ -35,12 +37,10 @@ const {
     dragMiniTextEditor,
     createMiniTextEditor,
     deleteMiniTextEditor,
-    // miniTextEditor,
-    // yArrayMiniTextEditor,
+
     miniTextEditorHasEventSet,
     changeMiniTextEditorBodyContent,
 } = useDragMiniTextEditor();
-
 
 function changeStickyNoteColor(stickyNoteId: number, color: string) {
     for (let i = 0; i < stickyNote.value.length; i++) {
@@ -59,32 +59,35 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
 }
 
 onMounted(() => {
+   
+        setTimeout( () => {
+            
+            drawOnCanvas();
+        }, 3000);
 
-    setTimeout(() => drawOnCanvas(),1000)
-
-    initYjs(
-        {
-            yArrayStickyNote,
-            stickyNoteHasEventSet,
-            changeStickyNoteBodyContent,
-            stickyNote,
-            dragStickyNote,
-        },
-        {
-            // yArrayMiniTextEditor,
-            miniTextEditorHasEventSet,
-            changeMiniTextEditorBodyContent,
-            dragMiniTextEditor,
-            // miniTextEditor,
-        }
-    );
+        initYjs(
+            {
+                yArrayStickyNote,
+                stickyNoteHasEventSet,
+                changeStickyNoteBodyContent,
+                stickyNote,
+                dragStickyNote,
+            },
+            {
+                miniTextEditorHasEventSet,
+                changeMiniTextEditorBodyContent,
+                dragMiniTextEditor,
+            }
+        );
+   
 });
 </script>
 <template>
     <!-- @mousemove="trackMousePosition" -->
-    <div class="bg-slate-100" >
+    <div class="">
+       
         <div class="flex">
-            <div class="bg-slate-200 h-screen w-[50px]">
+            <div class="bg-slate-100 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">
                 <img :src="App.baseUrl+'/img/logo.png'"
                 width="50"  alt="logo">
@@ -99,10 +102,13 @@ onMounted(() => {
                     :stickyNotes="stickyNote"
                     @changeStickyNoteColor="changeStickyNoteColor"
                 />
-                <UndoRedo />
+                <UndoRedo
+                    @redo="redo"
+                    @undo="undo"
+                />
             </div>
 
-            <div class="bg-slate-200 w-screen">
+            <div class="bg-slate-100 w-screen">
                 <div class="flex justify-between p-2 mt-1">
                     <div
                         class="flex bg-white p-2 px-3 gap-2 py-2 rounded-md shadow-md"
@@ -133,19 +139,18 @@ onMounted(() => {
                         </button>
                     </div>
                 </div>
-                <!-- {{ yDocStore.drawingArray }} -->
                 <canvas
-                    width="1200"
-                    height="800"
+                    class="w-full h-screen"
                     style="
-                        background-color: gainsboro;
-                       
+                        background-color: #f4f4f9;
+
                         z-index: -1000;
                     "
                 ></canvas>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
                     <!-- list of ceated projects #e2e8f0; -->
+
                     <StickyNote
                         @deleteStickyNote="deleteStickyNote"
                         :sticky-notes="stickyNote"
@@ -159,7 +164,7 @@ onMounted(() => {
                     <UserCursor :mouse-position="yDocStore.mousePosition" />
                 </div>
                 <!-- {{ stickyNote }} -->
-                <!-- {{ yDocStore.miniTextEditor }} -->
+                <!-- {{ yDocStore.arrayDrawing }} -->
             </div>
         </div>
     </div>
