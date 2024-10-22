@@ -6,28 +6,40 @@ import UndoRedo from "./components/project-board/UndoRedo.vue";
 import { useDragStickyNote } from "./actions/project-board/stickyNote";
 import StickyNote from "./components/project-board/StickyNote.vue";
 import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
-import {  onMounted } from "vue";
+import { onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 import { initYjs } from "../../yjs/yjs";
 import { yDocStore } from "../../store/yDoc";
 import { useShareUserCursor } from "./actions/project-board/cursor/userMouse";
 import UserCursor from "./components/project-board/UserCursor.vue";
-import {useCanvas} from "./actions/project-board/canvas/canvas";
-
+import { useCanvas } from "./actions/project-board/canvas/canvas";
 import LoadingIndicator from "./components/project-board/LoadingIndicator.vue";
+import TextCaption from "./components/project-board/TextCaption.vue";
+import { useDragTextCaption } from "./actions//project-board/textCaption";
 
- const {initCanvas}=useCanvas();
+const { initCanvas } = useCanvas();
 
 const { trackMousePosition } = useShareUserCursor();
+
+const {
+    dragTextCaption,
+    createTextCaption,
+    textCaption,
+
+    deleteTextCaption,
+
+    yArrayTextCaption,
+
+    textCaptionHasEventSet,
+    changeTextCaptionBodyContent,
+} = useDragTextCaption();
 
 const {
     dragStickyNote,
     createStickyNote,
     stickyNote,
     deleteStickyNote,
-
     yArrayStickyNote,
-
     stickyNoteHasEventSet,
     changeStickyNoteBodyContent,
 } = useDragStickyNote();
@@ -58,31 +70,34 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
 }
 
 onMounted(() => {
-   
+    initYjs(
+        {
+            yArrayStickyNote,
+            stickyNoteHasEventSet,
+            changeStickyNoteBodyContent,
+            stickyNote,
+            dragStickyNote,
+        },
+        {
+            miniTextEditorHasEventSet,
+            changeMiniTextEditorBodyContent,
+            dragMiniTextEditor,
+        },
 
-        initYjs(
-            {
-                yArrayStickyNote,
-                stickyNoteHasEventSet,
-                changeStickyNoteBodyContent,
-                stickyNote,
-                dragStickyNote,
-            },
-            {
-                miniTextEditorHasEventSet,
-                changeMiniTextEditorBodyContent,
-                dragMiniTextEditor,
-            }
-        );
-   
+        {
+            dragTextCaption,
+            textCaption,
+            yArrayTextCaption,
+            textCaptionHasEventSet,
+            changeTextCaptionBodyContent,
+        }
+    );
 });
 </script>
 <template>
-   
     <div class="" @mousemove="trackMousePosition">
-
         <!-- <LoadingIndicator/> -->
-        
+
         <div class="flex">
             <div class="bg-slate-100 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">
@@ -91,7 +106,10 @@ onMounted(() => {
                </div> -->
 
                 <AddItem
-                @initDrawing="async () => (await initCanvas()).drawOnCanvas()"
+                    @createTextCaption="createTextCaption"
+                    @initDrawing="
+                        async () => (await initCanvas()).drawOnCanvas()
+                    "
                     @createStickyNote="createStickyNote"
                     @createMiniTextEditor="createMiniTextEditor"
                 />
@@ -101,9 +119,9 @@ onMounted(() => {
                     @changeStickyNoteColor="changeStickyNoteColor"
                 />
                 <UndoRedo
-                @redo="async () => (await initCanvas()).redo()"
-                @undo="async () => (await initCanvas()).undo()"/>
-
+                    @redo="async () => (await initCanvas()).redo()"
+                    @undo="async () => (await initCanvas()).undo()"
+                />
             </div>
 
             <div class="bg-slate-100 w-screen">
@@ -148,6 +166,11 @@ onMounted(() => {
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
                     <!-- list of ceated projects #e2e8f0; -->
+
+                    <TextCaption
+                        @deleteTextCaption="deleteTextCaption"
+                        :textCaptions="textCaption"
+                    />
 
                     <StickyNote
                         @deleteStickyNote="deleteStickyNote"

@@ -50,10 +50,10 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
             img.onload = () => {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             };
-            adjustCanvasSize()
+            adjustCanvasSize() //to change;..
 
         } else {
-            adjustCanvasSize()
+            adjustCanvasSize() //to change;..
             drawGrid();
             
         }

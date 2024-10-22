@@ -5,8 +5,17 @@ import { Ref } from "vue";
 import { IStickyNote } from "../pages/admin/actions/project-board/stickyNoteTypes";
 import { yDocStore } from "../store/yDoc";
 import { runFuncSequentially } from "../helper/util";
-import { initCursor, initDrawing, initMiniTextEditor, initMouse, initStickyNote } from "./yjsUtil";
+import { initCursor, initDrawing, initMiniTextEditor, initMouse, initStickyNote, initTextCaption } from "./yjsUtil";
+import { ITextCaption } from "../pages/admin/actions/project-board/textCaptionTypes";
 
+
+export interface ITextCaptionParams {
+    yArrayTextCaption: Ref<Y.Array<ITextCaption>>;
+    textCaptionHasEventSet: Set<number>;
+    changeTextCaptionBodyContent: (...args: any[]) => void;
+    dragTextCaption: (...args: any[]) => void;
+    textCaption: Ref<ITextCaption[]>;
+}
 
 
 export interface IStickyNoteParams {
@@ -26,13 +35,18 @@ export interface IMiniTextEditorParams {
 
 export async function initYjs(
     stickyNoteParam: IStickyNoteParams,
-    miniTextEditorParam: IMiniTextEditorParams
+    miniTextEditorParam: IMiniTextEditorParams,
+    textCaptionParam: ITextCaptionParams
 ) {
+    
 
-
-    runFuncSequentially([initCursor,initMouse,initDrawing,
+    runFuncSequentially([
+        initCursor,
+        initMouse,
+        initDrawing,
         initMiniTextEditor(miniTextEditorParam),
-        initStickyNote(stickyNoteParam)
+        initStickyNote(stickyNoteParam),
+        initTextCaption(textCaptionParam)
     ]).then(() => {
         console.log("All functions completed in sequence.");
     });

@@ -1,10 +1,21 @@
 import { useCanvas } from "../pages/admin/actions/project-board/canvas/canvas";
+import { ITextCaption } from "../pages/admin/actions/project-board/textCaptionTypes";
 import { yDocStore } from "../store/yDoc";
-import { IMiniTextEditorParams, IStickyNoteParams } from "./yjs";
+import { IMiniTextEditorParams, IStickyNoteParams, ITextCaptionParams } from "./yjs";
 
 const {initCanvas}=useCanvas()
 
 
+
+export const initTextCaption=(textCaptionParam: ITextCaptionParams) =>{
+    return function(){
+     return new Promise<any>((resolve, reject) =>{
+        initYjsTypesForTextCaption(textCaptionParam);
+         resolve(null)
+ 
+     })
+    }
+}
 
  export const initStickyNote=(stickyNoteParam: IStickyNoteParams) =>{
        return function(){
@@ -14,7 +25,6 @@ const {initCanvas}=useCanvas()
     
         })
        }
-    
 }
 
 
@@ -84,6 +94,40 @@ function initYjsTypesForMiniTextEditor(
         }
     });
 }
+
+
+
+
+
+function initYjsTypesForTextCaption(textCaptionParam: ITextCaptionParams) {
+    const {
+        yArrayTextCaption,
+
+        textCaptionHasEventSet,
+        changeTextCaptionBodyContent,
+        textCaption,
+        dragTextCaption,
+    } = textCaptionParam;
+    yArrayTextCaption.value = yDocStore.doc.getArray("y-array-text-caption");
+
+    yArrayTextCaption.value.observe((event: any) => {
+        textCaption.value = yArrayTextCaption.value.toArray();
+
+        for (const item of textCaption.value) {
+            if (textCaptionHasEventSet.has(item.id) === false) {
+                textCaptionHasEventSet.add(item.id);
+                setTimeout(() => {
+                    dragTextCaption(item.id);
+                    changeTextCaptionBodyContent(item.id);
+
+                   
+                }, 2000);
+            }
+        }
+    });
+}
+
+
 
 function initYjsTypesForStickyNote(stickyNoteParam: IStickyNoteParams) {
     const {
