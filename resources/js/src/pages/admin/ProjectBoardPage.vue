@@ -6,18 +6,17 @@ import UndoRedo from "./components/project-board/UndoRedo.vue";
 import { useDragStickyNote } from "./actions/project-board/stickyNote";
 import StickyNote from "./components/project-board/StickyNote.vue";
 import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
-import { onMounted } from "vue";
+import {  onMounted } from "vue";
 import { useDragMiniTextEditor } from "./actions/project-board/editor/miniTextEditor";
 import { initYjs } from "../../yjs/yjs";
 import { yDocStore } from "../../store/yDoc";
 import { useShareUserCursor } from "./actions/project-board/cursor/userMouse";
 import UserCursor from "./components/project-board/UserCursor.vue";
-import {
-    
-    useDrawOnCanvas,
-} from "./actions/project-board/canvas/canvas";
+import {useCanvas} from "./actions/project-board/canvas/canvas";
 
- const {drawOnCanvas,undo,redo}=useDrawOnCanvas();
+import LoadingIndicator from "./components/project-board/LoadingIndicator.vue";
+
+ const {initCanvas}=useCanvas();
 
 const { trackMousePosition } = useShareUserCursor();
 
@@ -60,10 +59,6 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
 
 onMounted(() => {
    
-        setTimeout( () => {
-            
-            drawOnCanvas();
-        }, 3000);
 
         initYjs(
             {
@@ -83,9 +78,11 @@ onMounted(() => {
 });
 </script>
 <template>
-    <!-- @mousemove="trackMousePosition" -->
-    <div class="">
-       
+   
+    <div class="" @mousemove="trackMousePosition">
+
+        <!-- <LoadingIndicator/> -->
+        
         <div class="flex">
             <div class="bg-slate-100 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">
@@ -94,6 +91,7 @@ onMounted(() => {
                </div> -->
 
                 <AddItem
+                @initDrawing="async () => (await initCanvas()).drawOnCanvas()"
                     @createStickyNote="createStickyNote"
                     @createMiniTextEditor="createMiniTextEditor"
                 />
@@ -103,9 +101,9 @@ onMounted(() => {
                     @changeStickyNoteColor="changeStickyNoteColor"
                 />
                 <UndoRedo
-                    @redo="redo"
-                    @undo="undo"
-                />
+                @redo="async () => (await initCanvas()).redo()"
+                @undo="async () => (await initCanvas()).undo()"/>
+
             </div>
 
             <div class="bg-slate-100 w-screen">

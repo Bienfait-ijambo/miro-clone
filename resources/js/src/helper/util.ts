@@ -12,3 +12,9 @@ export function __debounce<T>(cb:(fn:(...args:any[])=>T)=>T,delay:number){
 
 }
 
+export  async function runFuncSequentially( functions: (() => any | Promise<any>)[] ) {
+    for (const func of functions) {
+        await func();
+    }
+}
+

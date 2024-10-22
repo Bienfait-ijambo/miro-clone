@@ -3,17 +3,16 @@ import { App } from "../../../../app/app";
 const emit = defineEmits<{
     (e: "createStickyNote"): void;
     (e: "createMiniTextEditor"): void;
+    (e: "initDrawing"): void;
+
+    
 }>();
 </script>
 <template>
     <ul
         class="flex flex-col px-2 bg-white mt-20 mb-2 gap-2 p-2 rounded-md shadow-lg animate-pulse"
     >
-        <!-- <div class="w-full h-8 bg-gray-300 rounded mb-2"></div>
-        <div class="w-full h-8 bg-gray-300 rounded mb-2"></div>
-        <div class="w-full h-8 bg-gray-300 rounded mb-2"></div>
-        <div class="w-full h-8 bg-gray-300 rounded mb-2"></div> -->
-
+       
 
         <li
             class="flex flex-row rounded-md cursor-pointer bg-slate-100 px-2 py-1"
@@ -24,6 +23,7 @@ const emit = defineEmits<{
         </li>
 
         <li
+        @click="emit('initDrawing')"
             class="flex flex-row rounded-md cursor-pointer hover:bg-slate-100 px-2 py-1"
         >
             <span class="icon pt-1">

@@ -1,9 +1,8 @@
-import { ref } from "vue";
 import { IMiniTextEditor } from "../miniTextEditorTypes";
 import { miniTextEditorStore } from "../../../../../store/miniTextEditor";
 import { useEditor } from "./editor";
 import { ICursor, yDocStore } from "../../../../../store/yDoc";
-import { __debounce } from "../../../../../helper/util";
+import { __debounce, runFuncSequentially } from "../../../../../helper/util";
 
 export function useDragMiniTextEditor() {
     const { initMiniTextEditor } = useEditor();
@@ -144,12 +143,7 @@ export function useDragMiniTextEditor() {
         }
     }
 
-    async function runFuncSequentially( functions: (() => any | Promise<any>)[] ) {
-        for (const func of functions) {
-            await func();
-        }
-    }
-
+   
     function changeMiniTextEditorBodyContent(id: number) {
         const miniTextEditorContent = document.querySelector(
             ".text-editor-body-" + id

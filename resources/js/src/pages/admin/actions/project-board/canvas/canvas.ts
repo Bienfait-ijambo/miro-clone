@@ -1,16 +1,14 @@
 import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
 
-export function useDrawOnCanvas() {
-    function adjustCanvasSize( canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D ) {
+ function useDrawOnCanvas(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    function adjustCanvasSize(  ) {
         const ratio = window.devicePixelRatio || 1;
         canvas.width = canvas.offsetWidth * ratio;
         canvas.height = canvas.offsetHeight * ratio;
-        // Scale the drawing context to handle higher resolution
         ctx.scale(ratio, ratio);
     }
 
-    function drawGrid( canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D ) {
-        console.log("drawing grid...");
+    function drawGrid( ) {
         const gridSize = 40; // Size of each square in the grid
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
@@ -41,25 +39,28 @@ export function useDrawOnCanvas() {
     }
 
     function loadCachedGrid(
-        canvas: HTMLCanvasElement,
-        ctx: CanvasRenderingContext2D
+       
     ) {
         const cachedGrid = localStorage.getItem("cachedGrid");
 
         if (cachedGrid) {
-            console.log("load image..");
+            console.log('load cached grid')
             const img = new Image();
             img.src = cachedGrid;
             img.onload = () => {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             };
+            adjustCanvasSize()
+
         } else {
-            console.log("draw grid");
-            drawGrid(canvas, ctx);
+            adjustCanvasSize()
+            drawGrid();
+            
         }
+    
     }
 
-    function trackMousePosition(canvas: HTMLCanvasElement, event: any) {
+    function trackMousePosition( event: any) {
         const rect = canvas.getBoundingClientRect();
         return {
             x: event.clientX - rect.left,
@@ -68,10 +69,9 @@ export function useDrawOnCanvas() {
     }
 
     function replayDrawing() {
-        const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+     
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        loadCachedGrid(canvas, ctx);
+        loadCachedGrid();
         yDocStore.arrayDrawing.forEach((path) => {
             ctx.strokeStyle = path[0]?.strokeStyle; // Set the stroke style from the first point
             ctx.beginPath();
@@ -89,14 +89,13 @@ export function useDrawOnCanvas() {
     }
 
     function drawOnCanvas() {
-        const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+       
         let drawing = false;
         let drawingPath = [] as Array<IReplayDrawing>;
 
         canvas.addEventListener("mousedown", function (event: any) {
             drawing = true;
-            const mousePos = trackMousePosition(canvas, event);
+            const mousePos = trackMousePosition( event);
             ctx.strokeStyle = "blue";
            
             ctx.beginPath();
@@ -111,7 +110,7 @@ export function useDrawOnCanvas() {
 
         canvas.addEventListener("mousemove", function (event: any) {
             if (drawing) {
-                const mousePos = trackMousePosition(canvas, event);
+                const mousePos = trackMousePosition( event);
                 ctx.strokeStyle = "blue";
                 ctx.lineWidth = 3;
                 ctx.lineTo(mousePos.x, mousePos.y);
@@ -138,13 +137,12 @@ export function useDrawOnCanvas() {
             drawing = false;
         });
 
-        adjustCanvasSize(canvas, ctx);
-        loadCachedGrid(canvas, ctx);
+       
+        loadCachedGrid();
     }
      
     function undo() {
-        const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+      
         let index = 0;
         if (index >= 0) {
             const drawingPath = yDocStore.yArrayDrawing.get(index);
@@ -152,22 +150,46 @@ export function useDrawOnCanvas() {
 
             yDocStore.yArrayDrawing.delete(index, 1);
             replayDrawing();
-            loadCachedGrid(canvas, ctx);
+            loadCachedGrid();
         }
     }
 
     function redo() {
-        const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-        const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-
+     
         if (yDocStore.redoDrawingArray.length > 0) {
             const redo = yDocStore.redoDrawingArray.pop();
 
             yDocStore.yArrayDrawing.insert(0, [redo]);
             replayDrawing();
-            loadCachedGrid(canvas, ctx);
+            loadCachedGrid();
         }
     }
 
     return { drawOnCanvas, replayDrawing, undo,redo };
 }
+
+
+
+export  function useCanvas(){
+ 
+    function selectCanvas(){
+        return new Promise<{ canvas: HTMLCanvasElement,ctx: CanvasRenderingContext2D}>((resolve, reject) => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement;
+            const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+            resolve({canvas,ctx})
+        })
+    }
+    async function initCanvas(){
+       const {canvas,ctx}=await selectCanvas()
+       
+    
+        const {drawOnCanvas,undo,redo,replayDrawing}=useDrawOnCanvas(canvas,ctx);
+        
+        return {drawOnCanvas,undo,redo,replayDrawing}
+    }
+    
+    
+    return {initCanvas}
+    
+    
+    }
