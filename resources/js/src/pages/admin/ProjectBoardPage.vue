@@ -3,7 +3,7 @@ import { App } from "../../app/app";
 import AddItem from "./components/project-board/AddItem.vue";
 import ColorPalette from "./components/project-board/ColorPalette.vue";
 import UndoRedo from "./components/project-board/UndoRedo.vue";
-import { useDragStickyNote } from "./actions/project-board/stickyNote";
+import { useDragStickyNote } from "./actions/project-board/stickynote/stickyNote";
 import StickyNote from "./components/project-board/StickyNote.vue";
 import MiniTextEditor from "./components/project-board/MiniTextEditor.vue";
 import { onMounted } from "vue";
@@ -15,7 +15,7 @@ import UserCursor from "./components/project-board/UserCursor.vue";
 import { useCanvas } from "./actions/project-board/canvas/canvas";
 import LoadingIndicator from "./components/project-board/LoadingIndicator.vue";
 import TextCaption from "./components/project-board/TextCaption.vue";
-import { useDragTextCaption } from "./actions//project-board/textCaption";
+import { useDragTextCaption } from "./actions/project-board/text-caption/textCaption";
 
 const { initCanvas } = useCanvas();
 
@@ -25,11 +25,8 @@ const {
     dragTextCaption,
     createTextCaption,
     textCaption,
-
     deleteTextCaption,
-
     yArrayTextCaption,
-
     textCaptionHasEventSet,
     changeTextCaptionBodyContent,
 } = useDragTextCaption();
@@ -96,7 +93,7 @@ onMounted(() => {
 </script>
 <template>
     <div class="" @mousemove="trackMousePosition">
-        <!-- <LoadingIndicator/> -->
+        <LoadingIndicator :loading=" yDocStore.loading"/>
 
         <div class="flex">
             <div class="bg-slate-100 h-screen w-[50px]">
@@ -119,6 +116,7 @@ onMounted(() => {
                     @changeStickyNoteColor="changeStickyNoteColor"
                 />
                 <UndoRedo
+                @resetCanvas="async () => (await initCanvas()).initCanvas()"
                     @redo="async () => (await initCanvas()).redo()"
                     @undo="async () => (await initCanvas()).undo()"
                 />

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IStickyNote } from "../../actions/project-board/stickyNoteTypes";
+import { IStickyNote } from "../../actions/project-board/stickynote/stickyNoteTypes";
 
 defineProps<{
     stickyNotes: IStickyNote[];

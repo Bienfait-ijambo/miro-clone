@@ -1,4 +1,4 @@
-import { IMiniTextEditor } from "../miniTextEditorTypes";
+import { IMiniTextEditor } from "./miniTextEditorTypes";
 import { miniTextEditorStore } from "../../../../../store/miniTextEditor";
 import { useEditor } from "./editor";
 import { ICursor, yDocStore } from "../../../../../store/yDoc";

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ImageIcon from "../../../../components/icons/ImageIcon.vue";
 import { yDocStore } from "../../../../store/yDoc";
-import { IMiniTextEditor } from "../../actions/project-board/miniTextEditorTypes";
+import { IMiniTextEditor } from "../../actions/project-board/editor/miniTextEditorTypes";
 import BlinkingCursor from "./BlinkingCursor.vue";
 defineProps<{
     miniTextEditors: IMiniTextEditor[];

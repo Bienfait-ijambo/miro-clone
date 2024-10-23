@@ -1,8 +1,8 @@
 import { ref } from "vue";
-import { __debounce } from "../../../../helper/util";
+import { __debounce } from "../../../../../helper/util";
 import { ITextCaption } from "./textCaptionTypes";
-import { yDocStore } from "../../../../store/yDoc";
-import { textCaptionStore } from "../../../../store/textCaption";
+import { yDocStore } from "../../../../../store/yDoc";
+import { textCaptionStore } from "../../../../../store/textCaption";
 
 export function useDragTextCaption() {
     let newX = 0,

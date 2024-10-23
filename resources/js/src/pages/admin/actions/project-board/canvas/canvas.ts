@@ -141,6 +141,12 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
         loadCachedGrid();
     }
      
+    function initCanvas(){
+        const arrayLength=yDocStore.arrayDrawing.length
+        yDocStore.yArrayDrawing.delete(0, arrayLength);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    }
+
     function undo() {
       
         let index = 0;
@@ -165,7 +171,7 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
         }
     }
 
-    return { drawOnCanvas, replayDrawing, undo,redo };
+    return { drawOnCanvas, replayDrawing, undo,redo,initCanvas };
 }
 
 
@@ -183,9 +189,9 @@ export  function useCanvas(){
        const {canvas,ctx}=await selectCanvas()
        
     
-        const {drawOnCanvas,undo,redo,replayDrawing}=useDrawOnCanvas(canvas,ctx);
+        const {drawOnCanvas,undo,redo,replayDrawing,initCanvas}=useDrawOnCanvas(canvas,ctx);
         
-        return {drawOnCanvas,undo,redo,replayDrawing}
+        return {drawOnCanvas,undo,redo,replayDrawing,initCanvas}
     }
     
     

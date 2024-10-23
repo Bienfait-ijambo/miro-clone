@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ITextCaption } from "../../actions/project-board/textCaptionTypes";
+import { ITextCaption } from "../../actions/project-board/text-caption/textCaptionTypes";
 
 defineProps<{
     textCaptions: ITextCaption[];

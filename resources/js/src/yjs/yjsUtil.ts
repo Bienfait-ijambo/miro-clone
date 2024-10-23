@@ -1,5 +1,5 @@
 import { useCanvas } from "../pages/admin/actions/project-board/canvas/canvas";
-import { ITextCaption } from "../pages/admin/actions/project-board/textCaptionTypes";
+import { ITextCaption } from "../pages/admin/actions/project-board/text-caption/textCaptionTypes";
 import { yDocStore } from "../store/yDoc";
 import { IMiniTextEditorParams, IStickyNoteParams, ITextCaptionParams } from "./yjs";
 
@@ -183,6 +183,5 @@ function initYjsTypesDrawing() {
         
         (await initCanvas()).replayDrawing()
         
-        console.log("modifying y-array-drawing...");
     });
 }

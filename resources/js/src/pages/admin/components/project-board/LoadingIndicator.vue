@@ -1,9 +1,11 @@
-
+<script lang="ts" setup>
+const props=defineProps<{
+    loading:boolean
+}>()
+//  
+</script>
 <template>
-    
-        <div id="loadingSpinner" class="loading-spinner"></div>
-
- 
+    <div id="loadingSpinner" :style="props.loading ? 'display:block':'display:none'" class="loading-spinner"></div>
 </template>
 <style scoped>
 /* Spinner styles */

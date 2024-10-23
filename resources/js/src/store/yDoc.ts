@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import * as Y from "yjs";
-import { IMiniTextEditor } from "../pages/admin/actions/project-board/miniTextEditorTypes";
+import { IMiniTextEditor } from "../pages/admin/actions/project-board/editor/miniTextEditorTypes";
 export interface ICursor {
     cursorPosition: number;
     x: string;
@@ -38,8 +38,7 @@ const useYDocStore = defineStore("y-doc", {
         arrayDrawing: [] as Array<Array<IReplayDrawing>>,
         //we use it as history
         redoDrawingArray:[] as Array<Array<IReplayDrawing>>,
-
-
+loading:false
 
     }),
 });

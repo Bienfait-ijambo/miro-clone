@@ -1,8 +1,9 @@
 import { ref } from "vue";
 import { IStickyNote } from "./stickyNoteTypes";
-import { stickyNoteStore } from "../../../../store/stickyNote";
-import { yDocStore } from "../../../../store/yDoc";
-import { __debounce } from "../../../../helper/util";
+import { __debounce } from "../../../../../helper/util";
+import { stickyNoteStore } from "../../../../../store/stickyNote";
+import { yDocStore } from "../../../../../store/yDoc";
+
 
 export function useDragStickyNote() {
     let newX = 0,
