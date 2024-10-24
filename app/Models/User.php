@@ -11,9 +11,30 @@ class User extends Authenticatable
 {
     use HasFactory, HasApiTokens,Notifiable;
 
-    const IS_VALID_EMAIL=1;
 
-    const IS_INVALID_EMAIL=0;
+    
+    /*
+     * @param  is an object $googleUser
+     */
+    public static function createUser($googleUser)
+    {
+
+        
+
+        $user = User::updateOrCreate([
+            'googleId' => $googleUser->id,
+        ], [
+            'name' => $googleUser->name,
+            'email' => $googleUser->email,
+            'googleId' => $googleUser->id,
+
+        ]);
+
+        return $user;
+
+    }
+
+   
 
 
     /**
@@ -22,11 +43,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        // 'name',
+        'name',
         'email',
-        'password',
-        'isValidEmail',
-        'remember_token'
+        'googleId',
     ];
 
     /**

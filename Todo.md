@@ -31,3 +31,51 @@ INSTALLATION
 4. create tsconfig.ts file
 
 4. tailwind css
+
+---------------------------------------------------------------
+
+
+DATABASE STRUCTURE 
+
+users 
+	- name
+	- email
+	- googleId
+
+	endpoints : [login/create]
+
+
+projects
+	- name
+	- image
+	- projectCode (uniqueId str 10)
+	- userId (project owner)
+	- projectLink
+
+projectJoinees
+	- projectId
+	- userId (joinee)
+
+projectStickyNote
+	- projectId
+	- stickyData (json)
+	
+projectDrawing
+	- projectId
+	- drawingData (json)
+
+	
+projectMiniTextEditor
+	- projectId
+	- editorData (json)
+
+projectTextCaption
+	- projectId
+	- editorData (json)
+
+
+
+
+-  endpoints
+
+	endpoints : [post : create_or_update]

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // route parameter
@@ -16,6 +16,10 @@ Route::get('/app/{any}', function() {
 // baseUrl/app/register
 
 // baseUrl/
+
+Route::get('/auth/redirect', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/callback', [AuthController::class, 'createUserViaGoogle']);
+
 
 
 

@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import QueueListIcon from "../../components/QueueListIcon.vue";
-import LogoutIcon from "../../components/LogoutIcon.vue";
 import { App } from "../../app/app";
-import PlusIcon from "../../components/PersonPlusIcon.vue";
 </script>
 <template>
     <div class="bg-slate-100">
