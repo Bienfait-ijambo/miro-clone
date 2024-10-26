@@ -11,6 +11,16 @@ use Illuminate\Support\Str;
 use Validator;
 class ProjectController extends Controller
 {
+
+    public function getProjects(Request $request)
+    {
+
+        $data = Project::paginate(1);
+
+        return response( $data, 200);
+    }
+
+
     public function createProject(Request $request){
 
         $fields=$request->all();
@@ -28,7 +38,8 @@ class ProjectController extends Controller
         }
 
 
-        $projectCode=Str::random(128).'-'.time();
+        
+        $projectCode=Str::random(10).'-'.time();
         $projectLink=url('/');
 
         Project::create([
@@ -41,7 +52,32 @@ class ProjectController extends Controller
 
         return response(['message' => 'Project created successfully',200]);
 
-   
+    }
+
+
+    public function updateProject(Request $request){
+
+        $fields=$request->all();
+
+        $errors = Validator::make($fields, [
+            'name' => 'required',
+            'userId' => 'required',
+        ]);
+
+        if ($errors->fails()) {
+            return response([
+                'errors' => $errors->errors()->all(),
+                'message' => 'invalid input',
+            ], 422);
+        }
+
+
+
+        Project::create([
+            'name' => $fields['name'],
+        ]);
+
+        return response(['message' => 'Project updated successfully',200]);
 
     }
 }

@@ -7,6 +7,9 @@ import PlusIcon from "../../components/icons/PlusIcon.vue";
 import {tryLogoutUser} from './actions/http/trylogout'
 import {logout} from './actions/http/logout'
 import ProjectModal from "./components/project/ProjectModal.vue";
+import ProjectList from "./components/project/ProjectList.vue";
+import { useGetProject } from "./actions/project/getProject";
+import { TailwindPagination } from 'laravel-vue-pagination';
 const user=getUserData()
 
 const showMenu=ref(false)
@@ -28,9 +31,16 @@ function closeModal(){
 
 }
 
+function updateProject(){
+    console.log('...')
+}
+
+const {getProjects,serverData}=useGetProject()
+
 
 onMounted(async () => {
   await tryLogoutUser()
+  await getProjects()
 })
 
 </script>
@@ -110,40 +120,20 @@ onMounted(async () => {
                         </div>
                     </div>
 
-                    <div
-                        class="flex justify-center bg-white items-center min-h-60 shadow-md p-4 rounded-md cursor-pointer"
-                    >
-                        <div class="px-6">
-                            <div class="flex justify-center">
-                                <p>Build Smart AI</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="flex justify-center bg-white items-center min-h-60 shadow-md p-4 rounded-md cursor-pointer"
-                    >
-                        <div class="px-6">
-                            <div class="flex justify-center">
-                                <p>Build trello clone</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-
-                        class="flex justify-center bg-white items-center min-h-60 shadow-md p-4 rounded-md cursor-pointer"
-                    >
-                        <div class="px-6">
-                            <div class="flex justify-center">
-                                <p>Build Smart AI</p>
-                            </div>
-                        </div>
-                    </div>
-
+                   <ProjectList :projects="serverData?.data" @update-project="updateProject"/>
+                   
+                 
 
                     
 
 
+                </div>
+                <div>
+                <TailwindPagination
+                class="bg-white shadow-md rounded-md _pagination"
+      :data="serverData"
+      @pagination-change-page="getProjects"
+  />
                 </div>
             </div>
         </div>

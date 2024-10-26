@@ -5,6 +5,8 @@ import { required } from "@vuelidate/validators";
 import { ref } from "vue";
 import Error from "../../../../components/base-components/Error.vue";
 import BaseInput from "../../../../components/base-components/BaseInput.vue";
+import { useCreateOrUpdateProject } from "../../actions/project/createOrUpdateProject";
+import { useProjectStore } from "../../../../store/projectStore";
 
 const props = defineProps<{
     showModal: boolean;
@@ -16,11 +18,15 @@ const emit = defineEmits<{
 
 const rules = {
     name: { required }, // Matches state.firstName
-    userId: { required },
+    // userId: { required },
 };
 
-const projectInput = ref({ name: "", userId: null });
-const v$ = useVuelidate(rules, projectInput.value);
+
+const projectInput=useProjectStore()
+const v$ = useVuelidate(rules, projectInput.input);
+
+const {createOrUpdateProject}=useCreateOrUpdateProject()
+
 
 async function validate() {
     const result = await v$.value.$validate();
@@ -28,6 +34,7 @@ async function validate() {
     if (!result) return;
 
     //http request
+    await createOrUpdateProject(projectInput.input,projectInput.edit)
 
     v$.value.$reset();
 }
@@ -43,7 +50,7 @@ async function validate() {
             <template #body>
                 <div class="flex flex-col">
                     <Error label="Project Name" :errors="v$.name.$errors">
-                        <BaseInput v-model="projectInput.name" />
+                        <BaseInput v-model="projectInput.input.name" />
                     </Error>
                 </div>
             </template>
