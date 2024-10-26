@@ -20,6 +20,17 @@ const router = createRouter({
           name: "project-board",
           component: () => import("../pages/admin/ProjectBoardPage.vue"),
       },
+
+      {
+        path: "/token",
+        name: "token",
+        component: () => import("../pages/auth/TokenPage.vue"),
+    },
+    {
+        path: "/callback",
+        name: "callback",
+        component: () => import("../pages/auth/CallbackPage.vue"),
+    },
       {
         path: "/learn-yjs",
         name: "learn-yjs",

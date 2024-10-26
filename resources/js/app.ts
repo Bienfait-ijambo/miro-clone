@@ -4,6 +4,8 @@ import { createApp } from "vue";
 import App from "./src/App.vue";
 import router from "./src/router/index";
 import { createPinia } from "pinia";
+import ToastPlugin from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-bootstrap.css'
 
 const importIcons = import.meta.glob("./src/components/icons/**/*.vue");
 
@@ -29,6 +31,7 @@ async function registerIcons(app: any) {
 const app = createApp(App);
 app.use(router);
 app.use(createPinia());
+app.use(ToastPlugin)
 
 registerIcons(app);
 app.mount("#app");

@@ -36,7 +36,6 @@ INSTALLATION
 
 
 DATABASE STRUCTURE 
-
 users 
 	- name
 	- email
@@ -51,6 +50,11 @@ projects
 	- projectCode (uniqueId str 10)
 	- userId (project owner)
 	- projectLink
+
+
+
+
+
 
 projectJoinees
 	- projectId

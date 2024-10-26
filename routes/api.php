@@ -2,23 +2,20 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 
 
 
 
-// Route::controller(AuthController::class)->group(function(){
-//     Route::post('/register','register');
-//     Route::post('/login','login');
-// });
+
+Route::post('/user_data', [AuthController::class, 'getUserData']);
 
 
-// Route::group(['middleware'=>['auth:sanctum']],function(){
+Route::group(['middleware' => ['auth:api']], function () {
 
-// });
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-
-
+});
 
 
 Route::get('/user', function (Request $request) {

@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     use HasFactory, HasApiTokens,Notifiable;
@@ -19,15 +22,14 @@ class User extends Authenticatable
     public static function createUser($googleUser)
     {
 
-        
-
+        $password = Str::random(128);
         $user = User::updateOrCreate([
             'googleId' => $googleUser->id,
         ], [
             'name' => $googleUser->name,
             'email' => $googleUser->email,
             'googleId' => $googleUser->id,
-
+            'password' => Hash::make($password)
         ]);
 
         return $user;
