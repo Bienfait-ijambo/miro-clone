@@ -1,8 +1,8 @@
 import { ref } from "vue"
-import { useProjectStore } from "../../../../store/projectStore"
-import { showError, successMsg } from "../../../../helper/toastnotification"
-import { getUserData } from "../../../../helper/auth"
-import { makeHttpReq2 } from "../../../../helper/makeHttpReq"
+import { useProjectStore } from "../../../../../store/projectStore"
+import { showError, successMsg } from "../../../../../helper/toastnotification"
+import { getUserData } from "../../../../../helper/auth"
+import { makeHttpReq2 } from "../../../../../helper/makeHttpReq"
 import { useGetProject } from "./getProject"
 
 
@@ -17,7 +17,6 @@ export interface ICreateOrUpdateProject {
   type ResponseType = { message: string }
   
   const projectInput = useProjectStore()
-  const {getProjects}=useGetProject()
 
   
   export function useCreateOrUpdateProject() {
@@ -32,7 +31,6 @@ export interface ICreateOrUpdateProject {
         loading.value = true
         projectInput.input.userId = parseInt(userData?.user?.userId as string)
         const data = edit ? await update('projects', input) : await create('projects', input)
-        await getProjects()
         projectInput.edit=false
         projectInput.input = {} as ICreateOrUpdateProject
         

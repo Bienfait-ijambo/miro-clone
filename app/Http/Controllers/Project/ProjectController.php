@@ -15,10 +15,24 @@ class ProjectController extends Controller
     public function getProjects(Request $request)
     {
 
-        $data = Project::paginate(1);
+        $data = Project::paginate(2);
 
         return response( $data, 200);
     }
+
+    public function getProjectDetail(Request $request)
+    {
+        $projectCode=$request->project_code;
+        $data = Project::where('projectCode', $projectCode)->first();
+
+        if(!is_null($data)){
+            return response( $data, 200);
+        }else{
+            return response( [], 200);
+        }
+       
+    }
+
 
 
     public function createProject(Request $request){
@@ -60,7 +74,9 @@ class ProjectController extends Controller
         $fields=$request->all();
 
         $errors = Validator::make($fields, [
+            'id' => 'required',
             'name' => 'required',
+
             'userId' => 'required',
         ]);
 
@@ -73,7 +89,7 @@ class ProjectController extends Controller
 
 
 
-        Project::create([
+        Project::where('id',$fields['id' ])->update([
             'name' => $fields['name'],
         ]);
 

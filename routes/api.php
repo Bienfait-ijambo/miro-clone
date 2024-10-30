@@ -17,6 +17,10 @@ Route::post('/user_data', [AuthController::class, 'getUserData']);
     Route::get('/projects', [ProjectController::class, 'getProjects']);
 
 
+    Route::get('/projects/detail', [ProjectController::class, 'getProjectDetail']);
+
+
+
 // });
 
 

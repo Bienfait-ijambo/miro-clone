@@ -52,10 +52,6 @@ projects
 	- projectLink
 
 
-
-
-
-
 projectJoinees
 	- projectId
 	- userId (joinee)

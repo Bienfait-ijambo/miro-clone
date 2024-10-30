@@ -5,7 +5,7 @@ import { required } from "@vuelidate/validators";
 import { ref } from "vue";
 import Error from "../../../../components/base-components/Error.vue";
 import BaseInput from "../../../../components/base-components/BaseInput.vue";
-import { useCreateOrUpdateProject } from "../../actions/project/createOrUpdateProject";
+import { useCreateOrUpdateProject } from "../../actions/project/http/createOrUpdateProject";
 import { useProjectStore } from "../../../../store/projectStore";
 
 const props = defineProps<{
@@ -14,6 +14,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: "closeModal"): void;
+    (e: "getProjects"): Promise<void>;
+
+
 }>();
 
 const rules = {
@@ -25,7 +28,7 @@ const rules = {
 const projectInput=useProjectStore()
 const v$ = useVuelidate(rules, projectInput.input);
 
-const {createOrUpdateProject}=useCreateOrUpdateProject()
+const {createOrUpdateProject,loading}=useCreateOrUpdateProject()
 
 
 async function validate() {
@@ -35,6 +38,7 @@ async function validate() {
 
     //http request
     await createOrUpdateProject(projectInput.input,projectInput.edit)
+    await emit('getProjects')
 
     v$.value.$reset();
 }
@@ -48,7 +52,7 @@ async function validate() {
             </template>
 
             <template #body>
-                <div class="flex flex-col">
+                <div class="flex flex-col ">
                     <Error label="Project Name" :errors="v$.name.$errors">
                         <BaseInput v-model="projectInput.input.name" />
                     </Error>
@@ -63,10 +67,16 @@ async function validate() {
                     Close
                 </button>
                 <button
+                :disabled="loading"
                     @click="validate"
                     className="bg-indigo-500 text-white px-4 py-2 rounded"
                 >
-                    Save
+                <span v-if="loading">
+                    Saving...
+                </span>
+                <span v-else>
+                    {{  projectInput.edit ? 'Update':'Save' }}
+                </span>
                 </button>
             </template>
         </BaseModal>

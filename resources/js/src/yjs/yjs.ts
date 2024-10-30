@@ -14,6 +14,7 @@ import {
     initTextCaption,
 } from "./yjsUtil";
 import { ITextCaption } from "../pages/admin/actions/project-board/text-caption/textCaptionTypes";
+import { IProjectDetail } from "../pages/admin/actions/project-board/http/getProjectDetail";
 
 export interface ITextCaptionParams {
     yArrayTextCaption: Ref<Y.Array<ITextCaption>>;
@@ -40,7 +41,8 @@ export interface IMiniTextEditorParams {
 export async function initYjs(
     stickyNoteParam: IStickyNoteParams,
     miniTextEditorParam: IMiniTextEditorParams,
-    textCaptionParam: ITextCaptionParams
+    textCaptionParam: ITextCaptionParams,
+    serverData:IProjectDetail
 ) {
     yDocStore.loading = true;
 
@@ -55,7 +57,7 @@ export async function initYjs(
         .then(() => {
             // this allows you to instantly get the (cached) documents data
             const indexeddbProvider = new IndexeddbPersistence(
-                "sticky-note-y",
+                serverData?.projectCode,
                 yDocStore.doc
             );
             indexeddbProvider.whenSynced.then(() => {
@@ -67,7 +69,8 @@ export async function initYjs(
 
     new WebsocketProvider(
         "ws://localhost:1234",
-        "sticky-note-y",
+        serverData?.projectCode,
+
         yDocStore.doc
     );
 }

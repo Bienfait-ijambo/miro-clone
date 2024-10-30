@@ -19,7 +19,7 @@ function updateValue(event: any) {
   <input
     :value="modelValue"
     :type="typeof type === 'undefined' ? 'text' : type"
-    class="border w-full rounded-md py-2 px-2 text-gray-600"
+    class="border w-full rounded-md py-2 px-2 text-gray-600 bg-white"
     @input="updateValue"
     placeholder="..."
   />

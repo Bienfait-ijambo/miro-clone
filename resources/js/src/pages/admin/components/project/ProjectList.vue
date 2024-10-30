@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IProjectList } from '../../actions/project/getProject';
+import { IProjectList } from "../../actions/project/http/getProject";
 
 const props = defineProps<{
     projects: IProjectList[];
@@ -12,14 +12,14 @@ const emit = defineEmits<{
 
 <template>
     <div
-    v-for="project in projects"
-    :key="project.id"
+        v-for="project in projects"
+        :key="project.id"
         class="flex justify-center bg-white items-center min-h-60 shadow-md p-4 rounded-md cursor-pointer"
     >
         <div class="px-6">
             <div class="flex justify-center">
                 <button
-                @click="emit('updateProject',project)"
+                    @click="emit('updateProject', project)"
                     class="hover:bg-slate-100 py-2 px-2 rounded-md hover:shadow-md"
                 >
                     <svg
@@ -39,7 +39,11 @@ const emit = defineEmits<{
                 </button>
             </div>
             <div class="flex justify-center">
-                <p>{{project.name}}</p>
+                <p>{{ project.name }}</p>
+                
+            </div>
+            <div class="flex text-gray-500 ml-[130px] mt-[60px] absolute  text-sm hover:text-indigo-500 font-semibold">
+                <RouterLink :to="'/project-boards?project_code='+project.projectCode">Details</RouterLink>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { makeHttpReq2 } from './../../../../helper/makeHttpReq';
+import { makeHttpReq2 } from '../../../../../helper/makeHttpReq';
 
 export interface IProjectList {
   id: number

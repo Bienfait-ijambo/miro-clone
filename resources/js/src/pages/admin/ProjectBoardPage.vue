@@ -16,7 +16,11 @@ import { useCanvas } from "./actions/project-board/canvas/canvas";
 import LoadingIndicator from "./components/project-board/LoadingIndicator.vue";
 import TextCaption from "./components/project-board/TextCaption.vue";
 import { useDragTextCaption } from "./actions/project-board/text-caption/textCaption";
+import { useRoute } from "vue-router";
+import { useGetProjectDetail } from "./actions/project-board/http/getProjectDetail";
 
+
+const route=useRoute()
 const { initCanvas } = useCanvas();
 
 const { trackMousePosition } = useShareUserCursor();
@@ -66,7 +70,11 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 
-onMounted(() => {
+
+const {serverData,getProjectDetail}=useGetProjectDetail(route)
+
+onMounted(async() => {
+    await getProjectDetail()
     initYjs(
         {
             yArrayStickyNote,
@@ -87,7 +95,8 @@ onMounted(() => {
             yArrayTextCaption,
             textCaptionHasEventSet,
             changeTextCaptionBodyContent,
-        }
+        },
+        serverData.value
     );
 });
 </script>
@@ -132,7 +141,11 @@ onMounted(() => {
                             width="25"
                             alt="logo"
                         />
-                        <span class="text-slate-200">|</span> Build Smart AI
+                        <span class="text-slate-200">|</span> {{serverData?.name}} 
+                        <!-- Include Heroicons -->
+ 
+
+
                     </div>
 
                     <div
@@ -157,7 +170,6 @@ onMounted(() => {
                     class="w-full h-screen"
                     style="
                         background-color: #f4f4f9;
-
                         z-index: -1000;
                     "
                 ></canvas>
