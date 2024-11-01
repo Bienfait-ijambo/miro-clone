@@ -44,7 +44,6 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
         const cachedGrid = localStorage.getItem("cachedGrid");
 
         if (cachedGrid) {
-            console.log('load cached grid')
             const img = new Image();
             img.src = cachedGrid;
             img.onload = () => {

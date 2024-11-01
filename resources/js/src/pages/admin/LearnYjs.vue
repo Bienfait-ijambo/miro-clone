@@ -38,7 +38,7 @@ function initYjs() {
     const remoteStateVector = message; // Get the remote state vector
     console.log('provider on message:', message);
     const update = Y.encodeStateAsUpdate(doc, remoteStateVector);
-    Y.applyUpdate(doc, update);
+    Y.applyUpdateV2(doc, update);
     console.log("Applied remote update based on state vector differences.");
   });
 

@@ -40,8 +40,7 @@ users
 	- name
 	- email
 	- googleId
-
-	endpoints : [login/create]
+	  endpoints : [login/create]
 
 
 projects
@@ -52,30 +51,37 @@ projects
 	- projectLink
 
 
-projectJoinees
-	- projectId
-	- userId (joinee)
 
 projectStickyNote
 	- projectId
-	- stickyData (json)
+	- stickyNoteData (json)
+	 $table->integer('projectId');
+     $table->json('stickyNoteData');
 	
 projectDrawing
 	- projectId
 	- drawingData (json)
+
+	 $table->integer('projectId');
+     $table->json('drawingData');
 
 	
 projectMiniTextEditor
 	- projectId
 	- editorData (json)
 
+	 $table->integer('projectId');
+     $table->json('editorData');
+
 projectTextCaption
 	- projectId
-	- editorData (json)
+	- textCaptionData (json)
+
+	 $table->integer('projectId');
+     $table->json('textCaptionData');
+
+projectJoinees
+	- projectId
+	- userId (joinee)
 
 
-
-
--  endpoints
-
-	endpoints : [post : create_or_update]

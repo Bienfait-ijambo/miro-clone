@@ -101,7 +101,8 @@ onMounted(async() => {
 });
 </script>
 <template>
-    <div class="" @mousemove="trackMousePosition">
+     <!-- @mousemove="trackMousePosition" -->
+    <div class="">
         <LoadingIndicator :loading=" yDocStore.loading"/>
 
         <div class="flex">

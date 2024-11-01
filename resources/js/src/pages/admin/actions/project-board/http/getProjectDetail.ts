@@ -24,6 +24,7 @@ export function useGetProjectDetail(route: RouteLocationNormalizedLoaded){
       try {
         loading.value = true
         const data = await makeHttpReq2<undefined, IProjectDetail>(`projects/detail?project_code=${project_code}`, 'GET')
+        // console.log('project detail : ',data)
         serverData.value = data
         loading.value = false
       } catch (error) {

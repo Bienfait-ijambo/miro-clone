@@ -46,7 +46,6 @@ export function useEditor() {
                     break;
 
                 case "apply-align-center-" + id:
-                    console.log("apply....");
                     applyAlignment(id, "center");
                     break;
 

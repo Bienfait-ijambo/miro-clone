@@ -68,7 +68,7 @@ export function useDragMiniTextEditor() {
     function getCursorPosition(
         editor: HTMLElement,
         cursor: HTMLElement
-    ): ICursor {
+    ): ICursor  {
         const selection = window.getSelection() as Selection;
 
         if (selection?.rangeCount > 0) {
@@ -206,7 +206,7 @@ export function useDragMiniTextEditor() {
 
             function runner() {
                 runFuncSequentially([func1, func2]).then(() => {
-                    console.log("All functions completed in sequence.");
+                    console.log("change occur in mini text editor...");
                 });
             }
 
@@ -307,8 +307,8 @@ export function useDragMiniTextEditor() {
                 document.addEventListener("mouseup", mouseUp);
 
                 function mouseMove(e: MouseEvent) {
-                    const newWidth =
-                        miniTextEditorStartwidth + e.clientX - startRX;
+                    // const newWidth =
+                    //     miniTextEditorStartwidth + e.clientX - startRX;
                     const newHeight =
                         miniTextEditorStartHeight + e.clientY - startRY;
 

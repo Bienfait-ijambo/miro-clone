@@ -50,7 +50,7 @@ const emit = defineEmits<{
             "
             contenteditable="true"
         >
-            <b>{{ textCaption.body }}</b>
+            {{ textCaption.body }}
         </div>
         <div class="flex justify-end">
             <div

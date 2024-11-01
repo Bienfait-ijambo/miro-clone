@@ -142,6 +142,7 @@ function initYjsTypesForStickyNote(stickyNoteParam: IStickyNoteParams) {
 
     yArrayStickyNote.value.observe((event: any) => {
         stickyNote.value = yArrayStickyNote.value.toArray();
+        console.log('change, x,y sticky note..')
 
         for (const item of stickyNote.value) {
             if (stickyNoteHasEventSet.has(item.id) === false) {

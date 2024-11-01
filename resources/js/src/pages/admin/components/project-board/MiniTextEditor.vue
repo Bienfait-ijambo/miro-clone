@@ -25,7 +25,7 @@ const emit = defineEmits<{
             height: miniTextEditor.resizePosition.y + 'px',
         }"
         :class="
-            'flex flex-col  min-h-40 w-[390px] shadow-md p-1 rounded-md cursor-pointer text-editor-' +
+            'flex flex-col bg-slate-200 min-h-40 w-[390px] shadow-md p-1 rounded-md cursor-pointer text-editor-' +
             miniTextEditor.id
         "
     >

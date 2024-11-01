@@ -7,11 +7,10 @@ export interface ICursor {
     y: string;
 }
 
-
 export interface IReplayDrawing {
     x: number;
     y: number;
-    type:"start"|'drawing'
+    type: "start" | "drawing";
     strokeStyle: string;
 }
 
@@ -37,9 +36,8 @@ const useYDocStore = defineStore("y-doc", {
         yArrayDrawing: new Y.Array<Array<IReplayDrawing>>(),
         arrayDrawing: [] as Array<Array<IReplayDrawing>>,
         //we use it as history
-        redoDrawingArray:[] as Array<Array<IReplayDrawing>>,
-loading:false
-
+        redoDrawingArray: [] as Array<Array<IReplayDrawing>>,
+        loading: false,
     }),
 });
 
