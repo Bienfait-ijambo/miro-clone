@@ -18,14 +18,14 @@ export function useGetProjectDetail(route: RouteLocationNormalizedLoaded){
     const project_code=route?.query?.project_code
     const loading=ref(false)
 
-    const serverData = ref<IProjectDetail>({} as IProjectDetail)
+    const projectData = ref<IProjectDetail>({} as IProjectDetail)
 
     async function getProjectDetail() {
       try {
         loading.value = true
         const data = await makeHttpReq2<undefined, IProjectDetail>(`projects/detail?project_code=${project_code}`, 'GET')
         // console.log('project detail : ',data)
-        serverData.value = data
+        projectData.value = data
         loading.value = false
       } catch (error) {
         console.error(error)
@@ -33,6 +33,6 @@ export function useGetProjectDetail(route: RouteLocationNormalizedLoaded){
       }
     }
   
-    return { getProjectDetail, serverData, loading }
+    return { getProjectDetail, projectData, loading }
 
 }

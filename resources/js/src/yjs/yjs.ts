@@ -42,11 +42,11 @@ export async function initYjs(
     stickyNoteParam: IStickyNoteParams,
     miniTextEditorParam: IMiniTextEditorParams,
     textCaptionParam: ITextCaptionParams,
-    serverData: IProjectDetail
+    projectData:IProjectDetail
+   
 ) {
     yDocStore.loading = true;
 
-    console.log("start.....", serverData?.projectCode);
     runFuncSequentially([
         initCursor,
         initMouse,
@@ -58,8 +58,7 @@ export async function initYjs(
         .then(() => {
             // this allows you to instantly get the (cached) documents data
             const indexeddbProvider = new IndexeddbPersistence(
-                // serverData?.projectCode,
-                "db-data-001",
+                projectData?.projectCode,
                 yDocStore.doc
             );
             indexeddbProvider.whenSynced.then(() => {
@@ -71,8 +70,7 @@ export async function initYjs(
 
     new WebsocketProvider(
         "ws://localhost:1234",
-        "myroom-001",
-        // serverData?.projectCode,
+        projectData?.projectCode,
 
         yDocStore.doc
     );

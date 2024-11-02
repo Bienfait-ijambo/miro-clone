@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Project\ProjectBoardController;
 use App\Http\Controllers\Project\ProjectController;
 
 Route::post('/user_data', [AuthController::class, 'getUserData']);
@@ -20,6 +21,15 @@ Route::post('/user_data', [AuthController::class, 'getUserData']);
     Route::get('/projects/detail', [ProjectController::class, 'getProjectDetail']);
 
 
+    Route::post('/mini_text_editors', [ProjectBoardController::class, 'createOrUpdateMiniTextEditor']);
+    Route::post('/sticky_notes', [ProjectBoardController::class, 'createOrUpdateStickyNote']);
+    Route::post('/drawings', [ProjectBoardController::class, 'createOrUpdateDrawing']);
+    Route::post('/text_captions', [ProjectBoardController::class, 'createOrUpdateTextCaption']);
+
+
+
+
+    
 
 // });
 

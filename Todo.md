@@ -51,10 +51,12 @@ projects
 	- projectLink
 
 
+[StickyNote,Drawing,MiniTextEditor,TextCaption]
 
 projectStickyNote
 	- projectId
 	- stickyNoteData (json)
+	
 	 $table->integer('projectId');
      $table->json('stickyNoteData');
 	
