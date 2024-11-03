@@ -17,19 +17,19 @@ import { ITextCaption } from "../pages/admin/actions/project-board/text-caption/
 import { IProjectDetail } from "../pages/admin/actions/project-board/http/getProjectDetail";
 
 export interface ITextCaptionParams {
-    yArrayTextCaption: Ref<Y.Array<ITextCaption>>;
+    // yArrayTextCaption: Ref<Y.Array<ITextCaption>>;
     textCaptionHasEventSet: Set<number>;
     changeTextCaptionBodyContent: (...args: any[]) => void;
     dragTextCaption: (...args: any[]) => void;
-    textCaption: Ref<ITextCaption[]>;
+    // textCaption: Ref<ITextCaption[]>;
 }
 
 export interface IStickyNoteParams {
-    yArrayStickyNote: Ref<Y.Array<IStickyNote>>;
+    // yArrayStickyNote: Ref<Y.Array<IStickyNote>>;
     stickyNoteHasEventSet: Set<number>;
     changeStickyNoteBodyContent: (...args: any[]) => void;
     dragStickyNote: (...args: any[]) => void;
-    stickyNote: Ref<IStickyNote[]>;
+    // stickyNote: Ref<IStickyNote[]>;
 }
 
 export interface IMiniTextEditorParams {
@@ -46,6 +46,8 @@ export async function initYjs(
    
 ) {
     yDocStore.loading = true;
+    yDocStore.doc.destroy()
+  
 
     runFuncSequentially([
         initCursor,
@@ -56,11 +58,14 @@ export async function initYjs(
         initTextCaption(textCaptionParam),
     ])
         .then(() => {
+           yDocStore.doc.getArray().delete(0,yDocStore.doc.getArray().length)
+            console.log('All func run....')
             // this allows you to instantly get the (cached) documents data
             const indexeddbProvider = new IndexeddbPersistence(
-                projectData?.projectCode,
+                'my-db-k-ky-0013',
                 yDocStore.doc
             );
+            indexeddbProvider.clearData()
             indexeddbProvider.whenSynced.then(() => {
                 yDocStore.loading = false;
                 console.log("loaded data from indexed db");
@@ -68,10 +73,14 @@ export async function initYjs(
         })
         .catch((err) => console.log(err));
 
-    new WebsocketProvider(
+    const provider=new WebsocketProvider(
         "ws://localhost:1234",
-        projectData?.projectCode,
-
+        `sv000013-${projectData?.projectCode}`
+        ,
         yDocStore.doc
     );
+
+    provider.on('sync', () =>{
+        console.log('document is synchronized....');
+    })
 }

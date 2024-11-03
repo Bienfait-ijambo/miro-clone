@@ -13,23 +13,32 @@ Route::post('/user_data', [AuthController::class, 'getUserData']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/projects', [ProjectController::class, 'createProject']);
-    Route::put('/projects', [ProjectController::class, 'updateProject']);
-    Route::get('/projects', [ProjectController::class, 'getProjects']);
+
+    Route::controller(ProjectController::class)->group(function () {
+
+        Route::post('/projects', 'createProject');
+       Route::put('/projects', 'updateProject');
+       Route::get('/projects', 'getProjects');
+       Route::get('/projects/detail', 'getProjectDetail');
+   
+      
+    });
 
 
-    Route::get('/projects/detail', [ProjectController::class, 'getProjectDetail']);
+    Route::controller(ProjectBoardController::class)->group(function () {
 
-
-    Route::post('/mini_text_editors', [ProjectBoardController::class, 'createOrUpdateMiniTextEditor']);
-    Route::post('/sticky_notes', [ProjectBoardController::class, 'createOrUpdateStickyNote']);
-    Route::post('/drawings', [ProjectBoardController::class, 'createOrUpdateDrawing']);
-    Route::post('/text_captions', [ProjectBoardController::class, 'createOrUpdateTextCaption']);
-
-
-
+        Route::post('/mini_text_editors', 'createOrUpdateMiniTextEditor');
+        Route::post('/sticky_notes',  'createOrUpdateStickyNote');
+        Route::post('/drawings',  'createOrUpdateDrawing');
+        Route::post('/text_captions',  'createOrUpdateTextCaption');
+        Route::get('/project_boards',  'getProjectBoardData');
+     
+      
+    });
 
     
+
+
 
 // });
 

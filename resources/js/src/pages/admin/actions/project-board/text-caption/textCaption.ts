@@ -19,10 +19,8 @@ export function useDragTextCaption() {
 
     let textCaptionStartwidth = 0,
         textCaptionStartHeight = 0;
-    const textCaption = ref<ITextCaption[]>([] as ITextCaption[]);
     let count = 0;
 
-    const yArrayTextCaption = ref();
 
     const textCaptionHasEventSet = new Set<number>();
 
@@ -37,7 +35,7 @@ export function useDragTextCaption() {
         const textCaptionContent = document.querySelector(
             ".text-caption-body-" + id
         ) as HTMLElement;
-        const index = textCaption.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.textCaption.findIndex((obj) => obj.id === id);
 
         textCaptionContent.addEventListener("keydown", function () {
 
@@ -45,51 +43,51 @@ export function useDragTextCaption() {
             
            function _changeTextCaptionContent(){
             yDocStore.doc.transact(function () {
-                const trackTextCaption = yArrayTextCaption.value.get(index);
+                const trackTextCaption = yDocStore.yArrayTextCaption.get(index);
 
                 if (trackTextCaption) {
-                    trackTextCaption.body = textCaptionContent.textContent;
+                    trackTextCaption.body = textCaptionContent.textContent as string
                 }
-                yArrayTextCaption.value.delete(index);
-                yArrayTextCaption.value.insert(index, [trackTextCaption]);
+                yDocStore.yArrayTextCaption.delete(index);
+                yDocStore.yArrayTextCaption.insert(index, [trackTextCaption]);
             });
            }
         });
     }
 
     function changeTextCaptionResizeXYPosition(id: number) {
-        const index = textCaption.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.textCaption.findIndex((obj) => obj.id === id);
 
-        const x = (textCaption.value[index].resizePosition.x = newResizeX);
-        const y = (textCaption.value[index].resizePosition.y = newResizeY);
+        const x = (yDocStore.textCaption[index].resizePosition.x = newResizeX);
+        const y = (yDocStore.textCaption[index].resizePosition.y = newResizeY);
 
         yDocStore.doc.transact(function () {
-            const trackTextCaption = yArrayTextCaption.value.get(index);
+            const trackTextCaption = yDocStore.yArrayTextCaption.get(index);
 
             if (trackTextCaption) {
                 trackTextCaption.resizePosition.y = y;
                 trackTextCaption.resizePosition.x = x;
             }
-            yArrayTextCaption.value.delete(index);
-            yArrayTextCaption.value.insert(index, [trackTextCaption]);
+            yDocStore.yArrayTextCaption.delete(index);
+            yDocStore.yArrayTextCaption.insert(index, [trackTextCaption]);
         });
     }
 
     function changeTextCaptionXYPosition(id: number) {
-        const index = textCaption.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.textCaption.findIndex((obj) => obj.id === id);
 
-        const x = (textCaption.value[index].dragPosition.x = startX);
-        const y = (textCaption.value[index].dragPosition.y = startY);
+        const x = (yDocStore.textCaption[index].dragPosition.x = startX);
+        const y = (yDocStore.textCaption[index].dragPosition.y = startY);
 
         yDocStore.doc.transact(function () {
-            const trackTextCaption = yArrayTextCaption.value.get(index);
+            const trackTextCaption = yDocStore.yArrayTextCaption.get(index);
 
             if (trackTextCaption) {
                 trackTextCaption.dragPosition.y = y;
                 trackTextCaption.dragPosition.x = x;
             }
-            yArrayTextCaption.value.delete(index);
-            yArrayTextCaption.value.insert(index, [trackTextCaption]);
+            yDocStore.yArrayTextCaption.delete(index);
+            yDocStore.yArrayTextCaption.insert(index, [trackTextCaption]);
         });
     }
 
@@ -97,7 +95,7 @@ export function useDragTextCaption() {
         count++;
         const color = getRandomColorClass();
 
-        textCaption.value.push({
+        yDocStore.textCaption.push({
             id: count,
             body: "",
             color: color,
@@ -111,7 +109,7 @@ export function useDragTextCaption() {
             },
         });
 
-        yArrayTextCaption.value.insert(0, [
+        yDocStore.yArrayTextCaption.insert(0, [
             {
                 id: count,
                 body: "",
@@ -144,12 +142,12 @@ export function useDragTextCaption() {
     }
 
     function deleteTextCaption(_textCaption: ITextCaption) {
-        const index = textCaption.value.findIndex(
+        const index = yDocStore.textCaption.findIndex(
             (obj) => obj.id === _textCaption.id
         );
-        textCaption.value.splice(index, index);
+        yDocStore.textCaption.splice(index, index);
 
-        yArrayTextCaption.value.delete(index);
+        yDocStore.yArrayTextCaption.delete(index);
     }
 
     function dragTextCaption(id: number) {
@@ -233,11 +231,8 @@ export function useDragTextCaption() {
     return {
         dragTextCaption,
         createTextCaption,
-        textCaption,
-
+      
         deleteTextCaption,
-
-        yArrayTextCaption,
 
         textCaptionHasEventSet,
         changeTextCaptionBodyContent,

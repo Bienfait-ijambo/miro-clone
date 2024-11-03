@@ -11,7 +11,8 @@ import { showError, successMsg } from "../../../../../helper/toastnotification"
 
 
 export function useSaveBoardData( arrayDrawing: IReplayDrawing[][],miniTextEditor: IMiniTextEditor[],
-    stickyNote:IStickyNote[] ,textCaption:ITextCaption[]  
+    stickyNote:IStickyNote[] ,textCaption:ITextCaption[]  ,
+    projectId:number
 ) {
     const loading = ref(false)
   
@@ -20,16 +21,16 @@ export function useSaveBoardData( arrayDrawing: IReplayDrawing[][],miniTextEdito
         loading.value = true
       
         //save drawingData
-        await makeHttpReq2<{drawingData:IReplayDrawing[][]}, ResponseType>('drawings', 'POST', {drawingData:arrayDrawing})
+         makeHttpReq2<{drawingData:IReplayDrawing[][],projectId:number}, ResponseType>('drawings', 'POST', {drawingData:arrayDrawing,projectId:projectId})
 
-        //save MiniTextEditor
-        // makeHttpReq2<{miniTextEditorData:IMiniTextEditor[]}, ResponseType>('mini_text_editors', 'POST', {miniTextEditorData:miniTextEditor})
+        // //save MiniTextEditor
+        makeHttpReq2<{miniTextEditorData:IMiniTextEditor[],projectId:number}, ResponseType>('mini_text_editors', 'POST', {miniTextEditorData:miniTextEditor,projectId:projectId})
 
         //save stickyNote
-        // await makeHttpReq2<{stickyNoteData:IStickyNote[]}, ResponseType>('sticky_notes', 'POST', {stickyNoteData:stickyNote})
+         makeHttpReq2<{stickyNoteData:IStickyNote[],projectId:number}, ResponseType>('sticky_notes', 'POST', {stickyNoteData:stickyNote,projectId:projectId})
 
         //save TextCaption
-        // makeHttpReq2<{textCaptionData:ITextCaption[]}, ResponseType>('text_captions', 'POST', {textCaptionData:textCaption})
+        makeHttpReq2<{textCaptionData:ITextCaption[],projectId:number}, ResponseType>('text_captions', 'POST', {textCaptionData:textCaption,projectId:projectId})
 
 
   

@@ -23,9 +23,14 @@ export function useGetProjectDetail(route: RouteLocationNormalizedLoaded){
     async function getProjectDetail() {
       try {
         loading.value = true
-        const data = await makeHttpReq2<undefined, IProjectDetail>(`projects/detail?project_code=${project_code}`, 'GET')
-        // console.log('project detail : ',data)
-        projectData.value = data
+        const data = await makeHttpReq2<undefined, IProjectDetail|Array<any>>(`projects/detail?project_code=${project_code}`, 'GET')
+       
+        if(!Array.isArray(data)){
+          projectData.value = data
+        }else{
+          window.location.href="/app/projects"
+        }
+       
         loading.value = false
       } catch (error) {
         console.error(error)

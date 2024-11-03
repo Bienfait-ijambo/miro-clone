@@ -101,19 +101,18 @@ function initYjsTypesForMiniTextEditor(
 
 function initYjsTypesForTextCaption(textCaptionParam: ITextCaptionParams) {
     const {
-        yArrayTextCaption,
-
+   
         textCaptionHasEventSet,
         changeTextCaptionBodyContent,
-        textCaption,
+ 
         dragTextCaption,
     } = textCaptionParam;
-    yArrayTextCaption.value = yDocStore.doc.getArray("y-array-text-caption");
+    yDocStore.yArrayTextCaption = yDocStore.doc.getArray("y-array-text-caption");
 
-    yArrayTextCaption.value.observe((event: any) => {
-        textCaption.value = yArrayTextCaption.value.toArray();
+    yDocStore.yArrayTextCaption.observe((event: any) => {
+        yDocStore.textCaption = yDocStore.yArrayTextCaption.toArray();
 
-        for (const item of textCaption.value) {
+        for (const item of yDocStore.textCaption) {
             if (textCaptionHasEventSet.has(item.id) === false) {
                 textCaptionHasEventSet.add(item.id);
                 setTimeout(() => {
@@ -131,20 +130,18 @@ function initYjsTypesForTextCaption(textCaptionParam: ITextCaptionParams) {
 
 function initYjsTypesForStickyNote(stickyNoteParam: IStickyNoteParams) {
     const {
-        yArrayStickyNote,
-
+       
         stickyNoteHasEventSet,
         changeStickyNoteBodyContent,
-        stickyNote,
+        // stickyNote,
         dragStickyNote,
     } = stickyNoteParam;
-    yArrayStickyNote.value = yDocStore.doc.getArray("y-array-sticky-notes");
+    yDocStore.yArrayStickyNote = yDocStore.doc.getArray("y-array-sticky-notes");
 
-    yArrayStickyNote.value.observe((event: any) => {
-        stickyNote.value = yArrayStickyNote.value.toArray();
-        console.log('change, x,y sticky note..')
-
-        for (const item of stickyNote.value) {
+    yDocStore.yArrayStickyNote.observe((event: any) => {
+        yDocStore.stickyNote = yDocStore.yArrayStickyNote.toArray();
+      
+        for (const item of yDocStore.stickyNote) {
             if (stickyNoteHasEventSet.has(item.id) === false) {
                 stickyNoteHasEventSet.add(item.id);
                 setTimeout(() => {
@@ -178,11 +175,11 @@ function initYjsTypesForCursor() {
 
 function initYjsTypesDrawing() {
     yDocStore.yArrayDrawing = yDocStore.doc.getArray("y-array-drawing");
-
     yDocStore.yArrayDrawing.observe(async(event: any) => {
         yDocStore.arrayDrawing=yDocStore.yArrayDrawing.toArray();
-        
+
+   
         (await initCanvas()).replayDrawing()
-        
+    
     });
 }

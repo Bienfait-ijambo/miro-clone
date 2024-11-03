@@ -1,9 +1,7 @@
-import { ref } from "vue";
 import { IStickyNote } from "./stickyNoteTypes";
 import { __debounce } from "../../../../../helper/util";
 import { stickyNoteStore } from "../../../../../store/stickyNote";
 import { yDocStore } from "../../../../../store/yDoc";
-
 
 export function useDragStickyNote() {
     let newX = 0,
@@ -20,77 +18,76 @@ export function useDragStickyNote() {
 
     let stickyNoteStartwidth = 0,
         stickyNoteStartHeight = 0;
-    const stickyNote = ref<IStickyNote[]>([] as IStickyNote[]);
     let count = 0;
-
-    const yArrayStickyNote = ref();
 
     const stickyNoteHasEventSet = new Set<number>();
 
-
-    
-    const _modifyStickyNote=__debounce(function(fn:(...args: any[]) => void){
-        fn()
-        
-    }, 1000);
+    const _modifyStickyNote = __debounce(function (
+        fn: (...args: any[]) => void
+    ) {
+        fn();
+    },
+    1000);
 
     function changeStickyNoteBodyContent(id: number) {
         const stickyNoteContent = document.querySelector(
             ".sticky-note-body-" + id
         ) as HTMLElement;
-        const index = stickyNote.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.stickyNote.findIndex((obj) => obj.id === id);
 
         stickyNoteContent.addEventListener("keydown", function () {
+            _modifyStickyNote(_changeStickyNoteContent);
 
-            _modifyStickyNote(_changeStickyNoteContent)
-            
-           function _changeStickyNoteContent(){
-            yDocStore.doc.transact(function () {
-                const trackStickyNote = yArrayStickyNote.value.get(index);
+            function _changeStickyNoteContent() {
+                yDocStore.doc.transact(function () {
+                    const trackStickyNote =
+                        yDocStore.yArrayStickyNote.get(index);
+                   
 
-                if (trackStickyNote) {
-                    trackStickyNote.body = stickyNoteContent.textContent;
-                }
-                yArrayStickyNote.value.delete(index);
-                yArrayStickyNote.value.insert(index, [trackStickyNote]);
-            });
-           }
+                    if (trackStickyNote) {
+                        trackStickyNote.body =
+                            stickyNoteContent.textContent as string;
+                    }
+                    yDocStore.yArrayStickyNote.delete(index);
+                    yDocStore.yArrayStickyNote.insert(index, [trackStickyNote]);
+                });
+            }
         });
     }
 
     function changeStickyNoteResizeXYPosition(id: number) {
-        const index = stickyNote.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.stickyNote.findIndex((obj) => obj.id === id);
 
-        const x = (stickyNote.value[index].resizePosition.x = newResizeX);
-        const y = (stickyNote.value[index].resizePosition.y = newResizeY);
+        const x = (yDocStore.stickyNote[index].resizePosition.x = newResizeX);
+        const y = (yDocStore.stickyNote[index].resizePosition.y = newResizeY);
 
         yDocStore.doc.transact(function () {
-            const trackStickyNote = yArrayStickyNote.value.get(index);
+            const trackStickyNote = yDocStore.yArrayStickyNote.get(index);
 
             if (trackStickyNote) {
                 trackStickyNote.resizePosition.y = y;
                 trackStickyNote.resizePosition.x = x;
             }
-            yArrayStickyNote.value.delete(index);
-            yArrayStickyNote.value.insert(index, [trackStickyNote]);
+            yDocStore.yArrayStickyNote.delete(index);
+            yDocStore.yArrayStickyNote.insert(index, [trackStickyNote]);
         });
     }
 
     function changeStickyNoteXYPosition(id: number) {
-        const index = stickyNote.value.findIndex((obj) => obj.id === id);
+        const index = yDocStore.stickyNote.findIndex((obj) => obj.id === id);
 
-        const x = (stickyNote.value[index].dragPosition.x = startX);
-        const y = (stickyNote.value[index].dragPosition.y = startY);
+        const x = (yDocStore.stickyNote[index].dragPosition.x = startX);
+        const y = (yDocStore.stickyNote[index].dragPosition.y = startY);
 
         yDocStore.doc.transact(function () {
-            const trackStickyNote = yArrayStickyNote.value.get(index);
+            const trackStickyNote = yDocStore.yArrayStickyNote.get(index);
 
             if (trackStickyNote) {
                 trackStickyNote.dragPosition.y = y;
                 trackStickyNote.dragPosition.x = x;
             }
-            yArrayStickyNote.value.delete(index);
-            yArrayStickyNote.value.insert(index, [trackStickyNote]);
+            yDocStore.yArrayStickyNote.delete(index);
+            yDocStore.yArrayStickyNote.insert(index, [trackStickyNote]);
         });
     }
 
@@ -98,7 +95,7 @@ export function useDragStickyNote() {
         count++;
         const color = getRandomColorClass();
 
-        stickyNote.value.push({
+        yDocStore.stickyNote.push({
             id: count,
             body: "",
             color: color,
@@ -112,7 +109,7 @@ export function useDragStickyNote() {
             },
         });
 
-        yArrayStickyNote.value.insert(0, [
+        yDocStore.yArrayStickyNote.insert(0, [
             {
                 id: count,
                 body: "",
@@ -145,24 +142,24 @@ export function useDragStickyNote() {
     }
 
     function deleteStickyNote(_stickyNote: IStickyNote) {
-        const index = stickyNote.value.findIndex(
+        const index = yDocStore.stickyNote.findIndex(
             (obj) => obj.id === _stickyNote.id
         );
-        stickyNote.value.splice(index, index);
+        yDocStore.stickyNote.splice(index, index);
 
-        yArrayStickyNote.value.delete(index);
+        yDocStore.yArrayStickyNote.delete(index);
     }
 
     function dragStickyNote(id: number) {
-        const stickyNote = document.querySelector(
-            ".sticky-note-" + id
-        ) as HTMLElement;
+        const stickyNote = document.querySelector( ".sticky-note-" + id ) as HTMLElement;
         const stickyNoteHandler = document.querySelector(
             ".sticky-note-handler-" + id
         ) as HTMLElement;
         const stickyNoteResizer = document.querySelector(
             ".sticky-note-resizer-" + id
         ) as HTMLElement;
+
+        console.log('dragging',id,'val :'+stickyNote)
 
         // dragging
         // resizing
@@ -231,15 +228,19 @@ export function useDragStickyNote() {
         });
     }
 
+    function changeStickyNoteColor(stickyNoteId: number, color: string) {
+        for (let i = 0; i < yDocStore.stickyNote.length; i++) {
+            if (yDocStore.stickyNote[i].id === stickyNoteId) {
+                yDocStore.stickyNote[i].color = color;
+            }
+        }
+    }
+
     return {
         dragStickyNote,
         createStickyNote,
-        stickyNote,
-
         deleteStickyNote,
-
-        yArrayStickyNote,
-
+        changeStickyNoteColor,
         stickyNoteHasEventSet,
         changeStickyNoteBodyContent,
     };

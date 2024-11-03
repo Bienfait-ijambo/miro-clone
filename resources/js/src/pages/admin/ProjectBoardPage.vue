@@ -20,8 +20,10 @@ import { RouterLink, useRoute } from "vue-router";
 import { useGetProjectDetail } from "./actions/project-board/http/getProjectDetail";
 import TopNavBar from "./components/project-board/TopNavBar.vue";
 import { useSaveBoardData } from "./actions/project-board/http/saveBoardData";
+import { tryLogoutUser } from "./actions/http/trylogout";
+import { useGetProjectBoardData } from "./actions/project-board/http/getProjectBoardData";
 
-const route=useRoute()
+const route = useRoute();
 const { initCanvas } = useCanvas();
 
 const { trackMousePosition } = useShareUserCursor();
@@ -29,9 +31,7 @@ const { trackMousePosition } = useShareUserCursor();
 const {
     dragTextCaption,
     createTextCaption,
-    textCaption,
     deleteTextCaption,
-    yArrayTextCaption,
     textCaptionHasEventSet,
     changeTextCaptionBodyContent,
 } = useDragTextCaption();
@@ -39,9 +39,9 @@ const {
 const {
     dragStickyNote,
     createStickyNote,
-    stickyNote,
+
     deleteStickyNote,
-    yArrayStickyNote,
+    changeStickyNoteColor,
     stickyNoteHasEventSet,
     changeStickyNoteBodyContent,
 } = useDragStickyNote();
@@ -55,14 +55,6 @@ const {
     changeMiniTextEditorBodyContent,
 } = useDragMiniTextEditor();
 
-function changeStickyNoteColor(stickyNoteId: number, color: string) {
-    for (let i = 0; i < stickyNote.value.length; i++) {
-        if (stickyNote.value[i].id === stickyNoteId) {
-            stickyNote.value[i].color = color;
-        }
-    }
-}
-
 function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     for (let i = 0; i < yDocStore.miniTextEditor.length; i++) {
         if (yDocStore.miniTextEditor[i].id === miniTextEditorId) {
@@ -71,25 +63,40 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 
+const { projectData, getProjectDetail } = useGetProjectDetail(route);
 
-const {projectData,getProjectDetail}=useGetProjectDetail(route)
-
-
-
-
-async function sx(){
-    const {saveBoardData}=useSaveBoardData(yDocStore.arrayDrawing,yDocStore.miniTextEditor,stickyNote.value,textCaption.value)
-await saveBoardData()
-    // console.log(yDocStore.arrayDrawing)
+async function saveProject() {
+    const projectId = projectData.value.id;
+    const { saveBoardData } = useSaveBoardData(
+        yDocStore.arrayDrawing,
+        yDocStore.miniTextEditor,
+        yDocStore.stickyNote,
+        yDocStore.textCaption,
+        projectId
+    );
+    await saveBoardData();
 }
-onMounted(async() => {
-    await getProjectDetail()
+
+const { getProjectBoardData } = useGetProjectBoardData(
+    initCanvas,
+    dragStickyNote,
+    changeStickyNoteBodyContent,
+    dragTextCaption,
+    changeTextCaptionBodyContent
+);
+
+onMounted(async () => {
+    await tryLogoutUser();
+
+    await getProjectDetail();
+
+    await getProjectBoardData(projectData.value.id);
+
     initYjs(
         {
-            yArrayStickyNote,
             stickyNoteHasEventSet,
             changeStickyNoteBodyContent,
-            stickyNote,
+
             dragStickyNote,
         },
         {
@@ -100,8 +107,7 @@ onMounted(async() => {
 
         {
             dragTextCaption,
-            textCaption,
-            yArrayTextCaption,
+
             textCaptionHasEventSet,
             changeTextCaptionBodyContent,
         },
@@ -110,9 +116,8 @@ onMounted(async() => {
 });
 </script>
 <template>
-   
     <div class="" @mousemove="trackMousePosition">
-        <LoadingIndicator :loading=" yDocStore.loading"/>
+        <LoadingIndicator :loading="yDocStore.loading" />
 
         <div class="flex">
             <div class="bg-slate-100 h-screen w-[50px]">
@@ -122,7 +127,7 @@ onMounted(async() => {
                </div> -->
 
                 <AddItem
-                @saveBoardData="sx"
+                    @saveBoardData="saveProject"
                     @createTextCaption="createTextCaption"
                     @initDrawing="
                         async () => (await initCanvas()).drawOnCanvas()
@@ -132,26 +137,21 @@ onMounted(async() => {
                 />
 
                 <ColorPalette
-                    :stickyNotes="stickyNote"
+                    :stickyNotes="yDocStore.stickyNote"
                     @changeStickyNoteColor="changeStickyNoteColor"
                 />
                 <UndoRedo
-                @resetCanvas="async () => (await initCanvas()).initCanvas()"
+                    @resetCanvas="async () => (await initCanvas()).initCanvas()"
                     @redo="async () => (await initCanvas()).redo()"
                     @undo="async () => (await initCanvas()).undo()"
                 />
             </div>
 
             <div class="bg-slate-100 w-screen">
-               
-<TopNavBar :project="projectData"/>
-
+                <TopNavBar :project="projectData" />
                 <canvas
                     class="w-full h-screen"
-                    style="
-                        background-color: #f4f4f9;
-                        z-index: -1000;
-                    "
+                    style="background-color: #f4f4f9; z-index: -1000"
                 ></canvas>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
@@ -159,12 +159,12 @@ onMounted(async() => {
 
                     <TextCaption
                         @deleteTextCaption="deleteTextCaption"
-                        :textCaptions="textCaption"
+                        :textCaptions="yDocStore.textCaption"
                     />
 
                     <StickyNote
                         @deleteStickyNote="deleteStickyNote"
-                        :sticky-notes="stickyNote"
+                        :sticky-notes="yDocStore.stickyNote"
                     />
                     <MiniTextEditor
                         @changeMiniTextEditorColor="changeMiniTextEditorColor"
@@ -174,8 +174,8 @@ onMounted(async() => {
 
                     <UserCursor :mouse-position="yDocStore.mousePosition" />
                 </div>
-                <!-- {{ stickyNote }} -->
-                {{ yDocStore.arrayDrawing }}
+                {{ yDocStore.stickyNote }}-------
+                {{ yDocStore.yArrayStickyNote.toArray() }}
             </div>
         </div>
     </div>

@@ -122,7 +122,6 @@ export function useEditor() {
             ".apply-hightLightText-" + id
         ) as HTMLElement;
 
-        // hightLightBtn.addEventListener("click", function () {
             const selection = document.getSelection() as Selection;
             if (!selection.rangeCount) return;
 
@@ -142,7 +141,6 @@ export function useEditor() {
                 replicateTextFormating(id);
             }
             selection.removeAllRanges();
-        // });
 
         function AddhightLightText(
             range: Range,
@@ -263,7 +261,6 @@ export function useEditor() {
         }
 
         function removeUnderline(range: Range) {
-            // <b>content</b>
             const parentElement =
                 range.commonAncestorContainer.parentElement?.closest("u");
             const docFragment = document.createDocumentFragment();
@@ -356,7 +353,6 @@ export function useEditor() {
         ) as HTMLElement;
         const selection = window.getSelection() as Selection;
 
-        // alignmentBtn.addEventListener("click", function () {
             if (!selection.rangeCount) return;
 
             const range = selection.getRangeAt(0);
@@ -376,7 +372,6 @@ export function useEditor() {
             replicateTextFormating(id);
 
             selection.removeAllRanges();
-        // });
     }
 
     //h tags

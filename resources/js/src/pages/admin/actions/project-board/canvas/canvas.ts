@@ -43,19 +43,20 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
     ) {
         const cachedGrid = localStorage.getItem("cachedGrid");
 
-        if (cachedGrid) {
-            const img = new Image();
-            img.src = cachedGrid;
-            img.onload = () => {
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            };
-            adjustCanvasSize() //to change;..
+        // if (cachedGrid) {
+        //     adjustCanvasSize() //to change;..
 
-        } else {
+        //     const img = new Image();
+        //     img.src = cachedGrid;
+        //     img.onload = () => {
+        //         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        //     };
+            
+        // } else {
             adjustCanvasSize() //to change;..
             drawGrid();
             
-        }
+        // }
     
     }
 
@@ -170,7 +171,9 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
         }
     }
 
-    return { drawOnCanvas, replayDrawing, undo,redo,initCanvas };
+
+
+    return { drawOnCanvas, replayDrawing, undo,redo,initCanvas};
 }
 
 

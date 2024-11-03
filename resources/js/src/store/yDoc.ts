@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import * as Y from "yjs";
 import { IMiniTextEditor } from "../pages/admin/actions/project-board/editor/miniTextEditorTypes";
+import { IStickyNote } from "../pages/admin/actions/project-board/stickynote/stickyNoteTypes";
+import { ITextCaption } from "../pages/admin/actions/project-board/text-caption/textCaptionTypes";
 export interface ICursor {
     cursorPosition: number;
     x: string;
@@ -19,7 +21,6 @@ const useYDocStore = defineStore("y-doc", {
         doc: new Y.Doc(),
         miniTextEditor: [] as IMiniTextEditor[],
         yArrayMiniTextEditor: new Y.Array<IMiniTextEditor>(),
-
         mousePosition: {
             x: 0,
             y: 0,
@@ -38,6 +39,16 @@ const useYDocStore = defineStore("y-doc", {
         //we use it as history
         redoDrawingArray: [] as Array<Array<IReplayDrawing>>,
         loading: false,
+
+
+
+        stickyNote:[] as IStickyNote[],
+        yArrayStickyNote: new Y.Array<IStickyNote>(),
+
+        yArrayTextCaption:new Y.Array<ITextCaption>(),
+        textCaption:[] as ITextCaption[]
+  
+
     }),
 });
 

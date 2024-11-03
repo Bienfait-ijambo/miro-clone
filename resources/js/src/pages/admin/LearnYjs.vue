@@ -26,8 +26,7 @@ function initYjs() {
   provider.on("sync", (isSynced: boolean) => {
     if (isSynced) {
       const stateVector:Uint8Array = Y.encodeStateVector(doc);
-      console.log("State vector sent, syncing with remote peers:", stateVector);
-
+      
       // Request the differences by sending the state vector
       provider.ws?.send(stateVector);
     }
@@ -37,7 +36,7 @@ function initYjs() {
   provider.on("message", (message: Uint8Array) => {
     const remoteStateVector = message; // Get the remote state vector
     console.log('provider on message:', message);
-    const update = Y.encodeStateAsUpdate(doc, remoteStateVector);
+    const update = Y.encodeStateAsUpdateV2(doc, remoteStateVector);
     Y.applyUpdateV2(doc, update);
     console.log("Applied remote update based on state vector differences.");
   });
