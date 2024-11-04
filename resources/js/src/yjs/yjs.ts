@@ -58,18 +58,18 @@ export async function initYjs(
         initTextCaption(textCaptionParam),
     ])
         .then(() => {
-           yDocStore.doc.getArray().delete(0,yDocStore.doc.getArray().length)
+         
             console.log('All func run....')
             // this allows you to instantly get the (cached) documents data
-            const indexeddbProvider = new IndexeddbPersistence(
-                'my-db-k-ky-0013',
-                yDocStore.doc
-            );
-            indexeddbProvider.clearData()
-            indexeddbProvider.whenSynced.then(() => {
-                yDocStore.loading = false;
-                console.log("loaded data from indexed db");
-            });
+            // const indexeddbProvider = new IndexeddbPersistence(
+            //    `${projectData?.projectCode}`,
+            //     yDocStore.doc
+            // );
+           
+            // indexeddbProvider.whenSynced.then(() => {
+            //     yDocStore.loading = false;
+            //     console.log("loaded data from indexed db");
+            // });
         })
         .catch((err) => console.log(err));
 

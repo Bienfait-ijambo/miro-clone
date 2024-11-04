@@ -16,6 +16,7 @@ const props=defineProps<{
     left: 50%;
     transform: translate(-50%, -50%);
     border: 8px solid #f3f3f3;
+    z-index: 1000;
     border-radius: 50%;
     border-top: 8px solid #3498db;
     width: 60px;

@@ -159,8 +159,7 @@ export function useDragStickyNote() {
             ".sticky-note-resizer-" + id
         ) as HTMLElement;
 
-        console.log('dragging',id,'val :'+stickyNote)
-
+        
         // dragging
         // resizing
 

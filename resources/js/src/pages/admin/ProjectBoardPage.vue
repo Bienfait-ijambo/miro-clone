@@ -77,12 +77,14 @@ async function saveProject() {
     await saveBoardData();
 }
 
-const { getProjectBoardData } = useGetProjectBoardData(
+const { getProjectBoardData,loading:loadingData } = useGetProjectBoardData(
     initCanvas,
     dragStickyNote,
     changeStickyNoteBodyContent,
     dragTextCaption,
-    changeTextCaptionBodyContent
+    changeTextCaptionBodyContent,
+    dragMiniTextEditor,
+    changeMiniTextEditorBodyContent
 );
 
 onMounted(async () => {
@@ -117,9 +119,9 @@ onMounted(async () => {
 </script>
 <template>
     <div class="" @mousemove="trackMousePosition">
-        <LoadingIndicator :loading="yDocStore.loading" />
+        <LoadingIndicator :loading="loadingData" />
 
-        <div class="flex">
+        <div class="flex" v-show="loadingData===true?false:true">
             <div class="bg-slate-100 h-screen w-[50px]">
                 <!-- <div class="flex justify-center  py-4">
                 <img :src="App.baseUrl+'/img/logo.png'"
@@ -147,7 +149,7 @@ onMounted(async () => {
                 />
             </div>
 
-            <div class="bg-slate-100 w-screen">
+            <div class="bg-slate-100 w-screen" >
                 <TopNavBar :project="projectData" />
                 <canvas
                     class="w-full h-screen"
@@ -174,8 +176,19 @@ onMounted(async () => {
 
                     <UserCursor :mouse-position="yDocStore.mousePosition" />
                 </div>
+                {{ yDocStore.textCaption }}-------
+                {{ yDocStore.yArrayTextCaption.toArray() }}
+
+                --------------------------------------------------------------------- <br>
+
+
                 {{ yDocStore.stickyNote }}-------
                 {{ yDocStore.yArrayStickyNote.toArray() }}
+
+                --------------------------------------------------------------------- <br>
+                {{ yDocStore.yArrayDrawing.toArray() }}
+                --------------------------------------------------------------------- <br>
+
             </div>
         </div>
     </div>

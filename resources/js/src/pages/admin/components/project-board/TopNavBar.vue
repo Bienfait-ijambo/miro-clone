@@ -1,10 +1,20 @@
 <script lang="ts" setup>
 import { App } from "../../../../app/app";
+import { showError, successMsg } from "../../../../helper/toastnotification";
 import { IProjectDetail } from "../../actions/project-board/http/getProjectDetail";
 
-defineProps<{
+const props=defineProps<{
     project: IProjectDetail;
 }>();
+
+
+function copyProjectLink(){
+    const projectLink=App.baseUrl+'/add_joinees?project_code='+props?.project?.projectCode
+
+    navigator.clipboard.writeText(projectLink).then(()=>{
+       successMsg('Project link copy')
+    }).catch((error)=>showError('error copying project link'))
+}
 </script>
 <template>
     <div class="flex justify-between p-2 mt-1">
@@ -24,6 +34,8 @@ defineProps<{
         </div>
 
         <div class="flex gap-2 bg-white p-2 px-2 py-2 rounded-md shadow-md">
+            
+
             <img
                 :src="App.baseUrl + '/img/avatar.webp'"
                 width="30"
@@ -32,6 +44,7 @@ defineProps<{
             />
 
             <button
+            @click="copyProjectLink"
                 class="flex gap-2 bg-blue-500 py-1 px-2 rounded-md text-white"
             >
                 <PersonPlusIcon class="mt-1" />

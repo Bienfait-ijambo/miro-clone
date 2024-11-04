@@ -12,12 +12,31 @@ use App\Models\MiniTextEditor;
 use App\Models\StickyNote;
 use App\Models\TextCaption;
 use App\Models\Drawing;
-
+use App\Models\Project;
 
 
 class ProjectBoardController extends Controller
 {
 
+
+    // public function addJoinees(Request $request)
+    // {
+    //     $projectCode = $request->projectCode;
+    //     $userId=$request->userId;
+    //     $project=Project::where('projectCode',$projectCode)->first();
+
+    //     if(!is_null($project)){
+    //         //check if user already added
+    //         Joinee::create([
+    //             'projectId'=>$project->id,
+    //             'userId'=>$userId
+    //         ]);
+    //     }else{
+
+    //         return response(['message' =>'project not found']);
+    //     }
+
+    // }
 
     public function getProjectBoardData(Request $request)
     {
