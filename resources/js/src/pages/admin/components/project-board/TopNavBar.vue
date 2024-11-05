@@ -9,7 +9,7 @@ const props=defineProps<{
 
 
 function copyProjectLink(){
-    const projectLink=App.baseUrl+'/add_joinees?project_code='+props?.project?.projectCode
+    const projectLink=App.baseUrl+'/app/add_joinees?project_code='+props?.project?.projectCode
 
     navigator.clipboard.writeText(projectLink).then(()=>{
        successMsg('Project link copy')
@@ -44,7 +44,7 @@ function copyProjectLink(){
             />
 
             <button
-            @click="copyProjectLink"
+             @click="copyProjectLink"
                 class="flex gap-2 bg-blue-500 py-1 px-2 rounded-md text-white"
             >
                 <PersonPlusIcon class="mt-1" />

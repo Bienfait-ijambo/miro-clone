@@ -86,4 +86,5 @@ projectJoinees
 	- projectId
 	- userId (joinee)
 
-
+	 $table->integer('projectId');
+	 $table->integer('userId');

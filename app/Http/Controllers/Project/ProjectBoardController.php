@@ -13,30 +13,54 @@ use App\Models\StickyNote;
 use App\Models\TextCaption;
 use App\Models\Drawing;
 use App\Models\Project;
+use App\Models\Joinee;
+
+
 
 
 class ProjectBoardController extends Controller
 {
 
 
-    // public function addJoinees(Request $request)
-    // {
-    //     $projectCode = $request->projectCode;
-    //     $userId=$request->userId;
-    //     $project=Project::where('projectCode',$projectCode)->first();
+    public function addJoinees(Request $request)
+    {
+        $projectCode = $request->projectCode;
+        $userId=$request->userId;
 
-    //     if(!is_null($project)){
-    //         //check if user already added
-    //         Joinee::create([
-    //             'projectId'=>$project->id,
-    //             'userId'=>$userId
-    //         ]);
-    //     }else{
+        $project=Project::where('projectCode',$projectCode)->first();
 
-    //         return response(['message' =>'project not found']);
-    //     }
+        if(!is_null($project)){
+            //check if user already added
+            $joinee=Joinee::where('userId',$userId)
+            ->where('projectId',$project->id)
+            ->first();
 
-    // }
+            if(is_null($joinee)){
+                Joinee::create([
+                    'projectId'=>$project->id,
+                    'userId'=>$userId
+                ]);
+                return response([
+                    'message' =>'user join the project',
+                    'status' =>true
+            ]);
+            }else{
+                return response([
+                    'message' =>'user already joinned the project',
+                    'status' =>true
+
+                ]);
+
+            }
+
+       
+          
+        }else{
+
+            return response(['message' =>'project not found']);
+        }
+
+    }
 
     public function getProjectBoardData(Request $request)
     {

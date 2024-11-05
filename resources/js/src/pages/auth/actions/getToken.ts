@@ -8,7 +8,7 @@ export async function getAccessTokenAndRefreshToken(codeVerifier:string) {
     try {
       const input: OauthTokenInputType = {
         grant_type: 'authorization_code',
-        client_id : '9d53c7f5-6abe-4f17-8f76-96b31815d822',
+        client_id : '9d69c34f-da8d-4930-a760-cb24235ee151',
         redirect_uri : 'http://127.0.0.1:8000/app/callback',
         code_verifier: codeVerifier,
         code: userData?.authorizationCode as string

@@ -13,7 +13,7 @@ import { yDocStore } from "../../store/yDoc";
 import { useShareUserCursor } from "./actions/project-board/cursor/userMouse";
 import UserCursor from "./components/project-board/UserCursor.vue";
 import { useCanvas } from "./actions/project-board/canvas/canvas";
-import LoadingIndicator from "./components/project-board/LoadingIndicator.vue";
+import LoadingIndicator from "../../components/base-components/LoadingIndicator.vue";
 import TextCaption from "./components/project-board/TextCaption.vue";
 import { useDragTextCaption } from "./actions/project-board/text-caption/textCaption";
 import { RouterLink, useRoute } from "vue-router";

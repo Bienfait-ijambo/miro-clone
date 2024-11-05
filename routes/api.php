@@ -9,7 +9,7 @@ use App\Http\Controllers\Project\ProjectController;
 Route::post('/user_data', [AuthController::class, 'getUserData']);
 
 
-// Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => ['auth:api']], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -32,6 +32,10 @@ Route::post('/user_data', [AuthController::class, 'getUserData']);
         Route::post('/drawings',  'createOrUpdateDrawing');
         Route::post('/text_captions',  'createOrUpdateTextCaption');
         Route::get('/project_boards',  'getProjectBoardData');
+        Route::post('/joinees',  'addJoinees');
+
+
+        
      
       
     });
@@ -40,7 +44,7 @@ Route::post('/user_data', [AuthController::class, 'getUserData']);
 
 
 
-// });
+});
 
 
 Route::get('/user', function (Request $request) {

@@ -51,8 +51,8 @@ class AuthController extends Controller
     public function createUserViaGoogle(Request $request)
     {
 
-        $googleUser = Socialite::driver('google')->user();
-        $user = User::createUser($googleUser);
+        // $googleUser = Socialite::driver('google')->user();
+        $user = User::createUser([]);
 
 
         Auth::login( $user);
@@ -67,7 +67,7 @@ class AuthController extends Controller
             base64_encode(hash('sha256', $code_verifier, true)), '='), '+/', '-_');
 
         $query = http_build_query([
-            'client_id' => '9d53c7f5-6abe-4f17-8f76-96b31815d822',
+            'client_id' => '9d69c34f-da8d-4930-a760-cb24235ee151',
             'redirect_uri' => 'http://127.0.0.1:8000/app/callback',
             'response_type' => 'code',
             'scope' => '',

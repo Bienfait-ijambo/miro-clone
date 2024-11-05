@@ -36,6 +36,12 @@ const router = createRouter({
         name: "learn-yjs",
         component: () => import("../pages/admin/LearnYjs.vue"),
     },
+  
+    {
+        path: "/add_joinees",
+        name: "add_joinees",
+        component: () => import("../pages/admin/addJoinee.vue"),
+    },
     ],
 });
 

@@ -4,7 +4,9 @@ import { useToast } from 'vue-toast-notification'
 const toast = useToast()
 
 export function showError(message: string) {
-  if (message === 'Not authenticated') {
+  if (message === 'Not authenticated' || message === 'Failed to fetch' ) {
+      // '
+
     window.location.href = '/app/login'
     localStorage.clear()
   }
