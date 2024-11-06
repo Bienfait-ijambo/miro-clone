@@ -9,7 +9,6 @@ const {addJoinees,loading}=useAddJoinees(route)
 
 
 onMounted(async ()=>{
-// await  tryLogoutUser()
 
 await addJoinees()
 

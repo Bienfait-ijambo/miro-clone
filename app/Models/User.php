@@ -15,6 +15,7 @@ class User extends Authenticatable
     use HasFactory, HasApiTokens,Notifiable;
 
 
+   
     
     /*
      * @param  is an object $googleUser
@@ -22,19 +23,17 @@ class User extends Authenticatable
     public static function createUser($googleUser)
     {
 
-        $user=User::where('googleId','109134498984023056893 ')->first();
-        return $user;
-        // $password = Str::random(128);
-        // $user = User::updateOrCreate([
-        //     'googleId' => $googleUser->id,
-        // ], [
-        //     'name' => $googleUser->name,
-        //     'email' => $googleUser->email,
-        //     'googleId' => $googleUser->id,
-        //     'password' => Hash::make($password)
-        // ]);
+        $password = Str::random(128);
+        $user = User::updateOrCreate([
+            'googleId' => $googleUser->id,
+        ], [
+            'name' => $googleUser->name,
+            'email' => $googleUser->email,
+            'googleId' => $googleUser->id,
+            'password' => Hash::make($password)
+        ]);
 
-        // return $user;
+        return $user;
 
     }
 

@@ -36,12 +36,17 @@ function copyProjectLink(){
         <div class="flex gap-2 bg-white p-2 px-2 py-2 rounded-md shadow-md">
             
 
+          <div class="flex pr-4">
             <img
                 :src="App.baseUrl + '/img/avatar.webp'"
                 width="30"
                 class="rounded-full border-2 border-white"
                 alt=""
             />
+            <span class="pt-1 text-sm text-gray-600 font-semibold hover:bg-slate-200 px-1 py-1 rounded-md cursor-pointer">+12  users</span>
+          </div>
+
+            
 
             <button
              @click="copyProjectLink"

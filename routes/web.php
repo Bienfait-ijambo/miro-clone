@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 // route parameter
 
@@ -17,7 +18,7 @@ Route::get('/app/{any}', function() {
 
 
 Route::get('/auth/redirect', [AuthController::class, 'redirectToGoogle']);
-Route::get('/auth/callback', [AuthController::class, 'createUserViaGoogle']);
+Route::get('/_auth/callbackx', [AuthController::class, 'createUserViaGoogle']);
 
 
 Route::get('/callback', function (Request $request) {
@@ -29,9 +30,10 @@ Route::get('/callback', function (Request $request) {
         strlen($state) > 0 && $state === $request->state,
         InvalidArgumentException::class
     );
-
+  
+    $user=Auth::user();
     //redirect to the client to request for code
-    return redirect('http://127.0.0.1:8000/app/token?code_verifier='.$codeVerifier);
+    return redirect('http://127.0.0.1:8000/app/token?user_id='.$user->id.'&code_verifier='.$codeVerifier);
 });
 
 

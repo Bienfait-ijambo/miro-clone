@@ -15,7 +15,7 @@ class ProjectController extends Controller
     public function getProjects(Request $request)
     {
 
-        $data = Project::paginate(2);
+        $data = Project::where('userId',$request->userId)->paginate(2);
 
         return response( $data, 200);
     }

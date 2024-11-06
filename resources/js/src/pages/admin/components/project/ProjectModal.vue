@@ -2,7 +2,6 @@
 import BaseModal from "../../../../components/base-components/BaseModal.vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { ref } from "vue";
 import Error from "../../../../components/base-components/Error.vue";
 import BaseInput from "../../../../components/base-components/BaseInput.vue";
 import { useCreateOrUpdateProject } from "../../actions/project/http/createOrUpdateProject";

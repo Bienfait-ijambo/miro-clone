@@ -29,8 +29,7 @@ export function useAddJoinees(route: RouteLocationNormalizedLoaded){
                 projectCode:projectCode,
                 userId:userData?.user?.userId as string
             })
-            console.log(data)
-
+          
             if(data.status){
                 // http://127.0.0.1:8000/app/add_joinees?project_code=BJDfgJLrje-1730775993
                 // http://127.0.0.1:8000/app/project-boards?project_code=BJDfgJLrje-1730775993

@@ -13,9 +13,11 @@ import { getAccessTokenAndRefreshToken } from './actions/getToken';
 const route = useRoute()
 
 const codeVerifier = route.query?.code_verifier as string
+const userId = route.query?.user_id as string
 
 onMounted(async () => {
-  await getAccessTokenAndRefreshToken(codeVerifier)
+  
+  await getAccessTokenAndRefreshToken(codeVerifier,userId)
 })
 </script>
 

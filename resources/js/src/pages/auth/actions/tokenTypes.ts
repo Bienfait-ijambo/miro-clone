@@ -5,6 +5,7 @@ export type OauthTokenInputType = {
     redirect_uri: string
     code_verifier: string
     code: string
+   
   }
   export type OauthTokenResponseType = {
     token_type: string
