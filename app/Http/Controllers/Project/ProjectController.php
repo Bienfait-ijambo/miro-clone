@@ -76,7 +76,6 @@ class ProjectController extends Controller
         $errors = Validator::make($fields, [
             'id' => 'required',
             'name' => 'required',
-
             'userId' => 'required',
         ]);
 

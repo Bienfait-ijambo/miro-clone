@@ -176,19 +176,7 @@ onMounted(async () => {
 
                     <UserCursor :mouse-position="yDocStore.mousePosition" />
                 </div>
-                {{ yDocStore.textCaption }}-------
-                {{ yDocStore.yArrayTextCaption.toArray() }}
-
-                --------------------------------------------------------------------- <br>
-
-
-                {{ yDocStore.stickyNote }}-------
-                {{ yDocStore.yArrayStickyNote.toArray() }}
-
-                --------------------------------------------------------------------- <br>
-                {{ yDocStore.yArrayDrawing.toArray() }}
-                --------------------------------------------------------------------- <br>
-
+               
             </div>
         </div>
     </div>

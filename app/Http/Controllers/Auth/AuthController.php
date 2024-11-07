@@ -60,10 +60,10 @@ class AuthController extends Controller
      
     public function createUserViaGoogle(Request $request)
     {
-    // $googleUser = Socialite::driver('google')->user();
+    $googleUser = Socialite::driver('google')->user();
 
     // $googleUser=new g('110271711780782516836','ijambo izuba','ijamboizuba20@gmail.com');
-    $googleUser=new g('109134498984023056893','bienfait Ijambo','bienfait201@gmail.com ');
+    // $googleUser=new g('109134498984023056893','bienfait Ijambo','bienfait201@gmail.com ');
 
     
         $user = User::createUser($googleUser);

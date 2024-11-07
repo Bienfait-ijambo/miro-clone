@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { getUserData } from "../../../../helper/auth";
+
 //
 
 const props = defineProps<{
@@ -6,7 +8,9 @@ const props = defineProps<{
         x: number;
         y: number;
     };
+    userName: string
 }>();
+// const userData = getUserData();
 </script>
 <template>
     <div
@@ -16,11 +20,10 @@ const props = defineProps<{
             top: mousePosition.y + 'px',
         }"
     >
-        <span class="cursor-label px-2 py-2">Elisabeth</span>
-
+        <span class="cursor-label px-2 py-2">{{userName}}</span>
 
         <svg
-        style="
+            style="
                 position: relative;
                 left: -60px;
                 font-weight: bold;
@@ -28,7 +31,6 @@ const props = defineProps<{
             "
             width="20"
             height="20"
-           
             viewBox="0 0 512 512"
             xmlns="http://www.w3.org/2000/svg"
             fill="#3cc3cd"
@@ -55,7 +57,6 @@ const props = defineProps<{
                 ></path>
             </g>
         </svg>
-      
     </div>
 </template>
 <style scoped>
