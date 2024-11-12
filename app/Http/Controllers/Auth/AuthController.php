@@ -10,16 +10,6 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-class g{
-    public $id;
-    public $name;
-    public $email;
-    public function __construct($id,$name,$email){
-        $this->name = $name;
-        $this->email = $email;
-        $this->id = $id;
-    }
-}
 
 class AuthController extends Controller
 {
@@ -60,15 +50,9 @@ class AuthController extends Controller
      
     public function createUserViaGoogle(Request $request)
     {
-    // $googleUser = Socialite::driver('google')->user();
-
-      $googleUser=new g('110271711780782516836','ijambo izuba','ijamboizuba20@gmail.com');
-    // $googleUser=new g('109134498984023056893','Bienfait Ijambo','bienfait201@gmail.com ');
+    $googleUser = Socialite::driver('google')->user();
 
     
-
-    //   $googleUser=new g('8777171178078251609283','Chris','chirs20@gmail.com');
-
         $user = User::createUser($googleUser);
 
 
