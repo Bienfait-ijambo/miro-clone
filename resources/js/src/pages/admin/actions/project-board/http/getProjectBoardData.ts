@@ -5,6 +5,7 @@ import { IReplayDrawing, yDocStore } from "../../../../../store/yDoc";
 import { IStickyNote } from "../stickynote/stickyNoteTypes";
 import { ITextCaption } from "../text-caption/textCaptionTypes";
 import { IMiniTextEditor } from "../editor/miniTextEditorTypes";
+import { getUserData } from "../../../../../helper/auth";
 
 type DrawingType = {
     drawingData: string;
@@ -41,22 +42,24 @@ export function useGetProjectBoardData(
     changeMiniTextEditorBodyContent: (id: number) => void,
 ) {
     const loading = ref(false);
-
+    const userData=getUserData()
     async function getProjectBoardData(projectId: number) {
         try {
             loading.value = true;
             const data = await makeHttpReq2<undefined, IProjectBoardData>(
-                `project_boards?projectId=${projectId}`,
+                `project_boards?projectId=${projectId}&userId=${userData?.user?.userId}`,
                 "GET"
             );
 
-       await resetYDocArray()
+        await resetYDocArray()
             getDrawingData(data);
             getStickyNoteData(data);
             getTextCaptionData(data);
             getMiniTextEditorData(data)
 
             loading.value = false;
+      
+          
         } catch (error) {
             showError((error as Error).message);
             loading.value = false;

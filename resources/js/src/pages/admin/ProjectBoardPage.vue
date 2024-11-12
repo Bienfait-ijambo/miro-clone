@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { App } from "../../app/app";
 import AddItem from "./components/project-board/AddItem.vue";
 import ColorPalette from "./components/project-board/ColorPalette.vue";
 import UndoRedo from "./components/project-board/UndoRedo.vue";
@@ -20,13 +19,13 @@ import { RouterLink, useRoute } from "vue-router";
 import { useGetProjectDetail } from "./actions/project-board/http/getProjectDetail";
 import TopNavBar from "./components/project-board/TopNavBar.vue";
 import { useSaveBoardData } from "./actions/project-board/http/saveBoardData";
-import { tryLogoutUser } from "./actions/http/trylogout";
 import { useGetProjectBoardData } from "./actions/project-board/http/getProjectBoardData";
-
+import JoinningUsersModal from "./components/project-board/JoinningUsersModal.vue";
+import { getUserData } from "../../helper/auth";
 const route = useRoute();
 const { initCanvas } = useCanvas();
-
-const { trackMousePosition } = useShareUserCursor();
+const userData = getUserData();
+const { trackMousePosition } = useShareUserCursor(userData);
 
 const {
     dragTextCaption,
@@ -39,7 +38,6 @@ const {
 const {
     dragStickyNote,
     createStickyNote,
-
     deleteStickyNote,
     changeStickyNoteColor,
     stickyNoteHasEventSet,
@@ -63,7 +61,14 @@ function changeMiniTextEditorColor(miniTextEditorId: number, color: string) {
     }
 }
 
-const { projectData, getProjectDetail } = useGetProjectDetail(route);
+const {
+    projectData,
+    getProjectDetail,
+    trackJoinAndLeavingUsers,
+    showJoiningUsersModal,
+    hideJoiningUsersModal,
+    showJoinneesModal,
+} = useGetProjectDetail(route, userData);
 
 async function saveProject() {
     const projectId = projectData.value.id;
@@ -77,7 +82,7 @@ async function saveProject() {
     await saveBoardData();
 }
 
-const { getProjectBoardData,loading:loadingData } = useGetProjectBoardData(
+const { getProjectBoardData, loading: loadingData } = useGetProjectBoardData(
     initCanvas,
     dragStickyNote,
     changeStickyNoteBodyContent,
@@ -88,7 +93,7 @@ const { getProjectBoardData,loading:loadingData } = useGetProjectBoardData(
 );
 
 onMounted(async () => {
-    await tryLogoutUser();
+    trackJoinAndLeavingUsers();
 
     await getProjectDetail();
 
@@ -119,15 +124,15 @@ onMounted(async () => {
 </script>
 <template>
     <div class="" @mousemove="trackMousePosition">
-        <LoadingIndicator :loading="loadingData" />
+        <LoadingIndicator :loading="loadingData|| yDocStore.loading" />
+    
+        <JoinningUsersModal
+            :show-modal="showJoinneesModal"
+            @closeModal="hideJoiningUsersModal"
+        />
 
-        <div class="flex" v-show="loadingData===true?false:true">
+        <div class="flex" v-show="(loadingData|| yDocStore.loading) === true ? false : true">
             <div class="bg-slate-100 h-screen w-[50px]">
-                <!-- <div class="flex justify-center  py-4">
-                <img :src="App.baseUrl+'/img/logo.png'"
-                width="50"  alt="logo">
-               </div> -->
-
                 <AddItem
                     @saveBoardData="saveProject"
                     @createTextCaption="createTextCaption"
@@ -149,8 +154,13 @@ onMounted(async () => {
                 />
             </div>
 
-            <div class="bg-slate-100 w-screen" >
-                <TopNavBar :project="projectData" />
+            <div class="bg-slate-100 w-screen">
+                <TopNavBar
+                    :project="projectData"
+                    :user-data="userData"
+                    @showJoiningUsersModal="showJoiningUsersModal"
+                />
+
                 <canvas
                     class="w-full h-screen"
                     style="background-color: #f4f4f9; z-index: -1000"
@@ -174,9 +184,13 @@ onMounted(async () => {
                         :miniTextEditors="yDocStore.miniTextEditor"
                     />
 
-                    <UserCursor :mouse-position="yDocStore.mousePosition" />
+                    <UserCursor
+                      :user-data="userData"
+                        :mouse-position="yDocStore.mousePosition"
+                       
+                    />
+                    {{ yDocStore.yArrayStickyNote.toArray() }}
                 </div>
-               
             </div>
         </div>
     </div>

@@ -118,7 +118,7 @@ onMounted(async () => {
                                 <PlusIcon />
                             </div>
                             <div class="flex justify-center d">
-                                <span>New Board</span>
+                                <span>New Project</span>
                             </div>
                         </div>
                     </div>

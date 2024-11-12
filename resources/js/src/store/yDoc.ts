@@ -3,6 +3,7 @@ import * as Y from "yjs";
 import { IMiniTextEditor } from "../pages/admin/actions/project-board/editor/miniTextEditorTypes";
 import { IStickyNote } from "../pages/admin/actions/project-board/stickynote/stickyNoteTypes";
 import { ITextCaption } from "../pages/admin/actions/project-board/text-caption/textCaptionTypes";
+import { userResponseType } from "../pages/auth/actions/tokenTypes";
 export interface ICursor {
     cursorPosition: number;
     x: string;
@@ -21,7 +22,9 @@ const useYDocStore = defineStore("y-doc", {
         doc: new Y.Doc(),
         miniTextEditor: [] as IMiniTextEditor[],
         yArrayMiniTextEditor: new Y.Array<IMiniTextEditor>(),
+       
         mousePosition: {
+            userName:'',
             x: 0,
             y: 0,
         },
@@ -29,6 +32,7 @@ const useYDocStore = defineStore("y-doc", {
 
         yCursor: new Y.Map(),
         cursor: {
+            typingUser:'',
             cursorPosition: 0,
             x: "",
             y: "",
@@ -38,6 +42,7 @@ const useYDocStore = defineStore("y-doc", {
         arrayDrawing: [] as Array<Array<IReplayDrawing>>,
         //we use it as history
         redoDrawingArray: [] as Array<Array<IReplayDrawing>>,
+        
         loading: false,
 
 
@@ -46,7 +51,12 @@ const useYDocStore = defineStore("y-doc", {
         yArrayStickyNote: new Y.Array<IStickyNote>(),
 
         yArrayTextCaption:new Y.Array<ITextCaption>(),
-        textCaption:[] as ITextCaption[]
+        textCaption:[] as ITextCaption[],
+
+
+        //users
+      joinees:[] as Array<userResponseType>
+        
   
 
     }),

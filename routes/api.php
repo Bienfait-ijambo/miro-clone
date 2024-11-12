@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Project\ProjectBoardController;
 use App\Http\Controllers\Project\ProjectController;
- 
+
+
 Route::post('/user_data', [AuthController::class, 'getUserData']);
 
 
@@ -33,10 +34,6 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('/text_captions',  'createOrUpdateTextCaption');
         Route::get('/project_boards',  'getProjectBoardData');
         Route::post('/joinees',  'addJoinees');
-
-
-        
-     
       
     });
 

@@ -82,14 +82,20 @@ function initYjsTypesForMiniTextEditor(
         yDocStore.miniTextEditor = yDocStore.yArrayMiniTextEditor.toArray();
 
         for (const item of yDocStore.miniTextEditor) {
+           
+            // setTimeout(() => {
+            //     changeMiniTextEditorBodyContent(item.id);
+                
+            // }, 100);
+            
             if (miniTextEditorHasEventSet.has(item.id) === false) {
                 miniTextEditorHasEventSet.add(item.id);
                 setTimeout(() => {
                     dragMiniTextEditor(item.id);
                     changeMiniTextEditorBodyContent(item.id);
-
-                    
-                }, 1000);
+                
+        
+                }, 100);
             }
         }
     });
@@ -113,11 +119,12 @@ function initYjsTypesForTextCaption(textCaptionParam: ITextCaptionParams) {
         yDocStore.textCaption = yDocStore.yArrayTextCaption.toArray();
 
         for (const item of yDocStore.textCaption) {
+            setTimeout(() => changeTextCaptionBodyContent(item.id),1000)
             if (textCaptionHasEventSet.has(item.id) === false) {
                 textCaptionHasEventSet.add(item.id);
                 setTimeout(() => {
                     dragTextCaption(item.id);
-                    changeTextCaptionBodyContent(item.id);
+                    
 
                    
                 }, 2000);
@@ -142,11 +149,14 @@ function initYjsTypesForStickyNote(stickyNoteParam: IStickyNoteParams) {
         yDocStore.stickyNote = yDocStore.yArrayStickyNote.toArray();
       
         for (const item of yDocStore.stickyNote) {
+            
+            setTimeout(() => changeStickyNoteBodyContent(item.id),1000)
+
             if (stickyNoteHasEventSet.has(item.id) === false) {
                 stickyNoteHasEventSet.add(item.id);
                 setTimeout(() => {
                     dragStickyNote(item.id);
-                    changeStickyNoteBodyContent(item.id);
+                    
 
                    
                 }, 2000);
@@ -161,6 +171,10 @@ function initYjsTypesForMouse() {
     yDocStore.yMouse.observe((event: any) => {
         yDocStore.mousePosition.x = yDocStore.yMouse.get("x") as number;
         yDocStore.mousePosition.y = yDocStore.yMouse.get("y") as number;
+        yDocStore.mousePosition.userName = yDocStore.yMouse.get("userName") as string;
+
+
+
     });
 }
 
@@ -170,6 +184,9 @@ function initYjsTypesForCursor() {
     yDocStore.yCursor.observe((event: any) => {
         yDocStore.cursor.x = yDocStore.yCursor.get("x") as string;
         yDocStore.cursor.y = yDocStore.yCursor.get("y") as string;
+        yDocStore.cursor.typingUser = yDocStore.yCursor.get("typingUser") as string;
+
+
     });
 }
 
@@ -183,3 +200,9 @@ function initYjsTypesDrawing() {
     
     });
 }
+
+
+// const blinkingCursor = document.querySelector(
+//     ".blinking-cursor-" + id
+// ) as HTMLElement;
+// blinkingCursor.style.display = "block";

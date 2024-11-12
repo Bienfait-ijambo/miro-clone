@@ -1,61 +1,39 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-import UserCursor from "./components/project-board/UserCursor.vue";
-// Define reactive variables
-const mousePosition = ref({
-            x: 0,
-            y: 0,
-        });
-const yMouse = ref();
+ import { onMounted, ref } from 'vue';
+import {useYjs} from './learnyjs'
+
+const val=ref(0)
+ const {message,messages,updateData,triggerAction}=useYjs()
+
+ const userTyping=()=>{
+  window.Echo.private(`chat.${2}`)
+    .whisper('typing', {
+        name: "ben",
+        userId:1
+    }) 
+ }
+ onMounted(()=>{
+//  await triggerAction(0)
+updateData()
+  messages.value=[]
 
 
 
-function initYjs() {
 
-  // Create a new Yjs document
-  const doc = new Y.Doc();
-  
-  yMouse.value = doc.getMap("y-mouse");
-
-yMouse.value.observe((event: any) => {
-  mousePosition.value.x = yMouse.value.get("x") ;
-    mousePosition.value.y = yMouse.value.get("y");
-});
-
-  new WebsocketProvider("ws://localhost:1234", "my-lox-room", doc);
-
- 
-
-
-}
-
-
-
-function trackMousePosition(event: any) {
-console.log('hello')
-mousePosition.value.x = event.clientX;
-mousePosition.value.y = event.clientY;
-yMouse.value.set("x", event.clientX);
-yMouse.value.set("y", event.clientY);
-}
-
-onMounted(() => {
-  initYjs()
-});
+ })
 </script>
 
 <template>
-  <div @mousemove="trackMousePosition" style="background-color: aliceblue;height: 200px;" >
+ <div>
+  <!-- <h1>Realtime {{ message }} </h1> -->
+  <input type="text" v-model="val" @keydown="userTyping" placeholder="message....">
+  <button @click="triggerAction(val)">Click here bro</button>
+  <br><br>
 
-    <!-- <h1>Array Sum: {{ sum }}</h1> -->
-    <!-- <button @click="calculateSum">Calculate Sum</button> -->
 
-    <!-- <p :style="{ marginLeft: margin.left + 'px' }">Hello</p> -->
-    <UserCursor :mouse-position="mousePosition" user-name="ben" />
-    <!-- <button @click="changeMargin" style="border: 1px solid blue">
-      Click here to change margin
-    </button> -->
+users messages:{{ messages }}
+  <div>
+    <!-- <input type="text" placeholder="message...."> -->
   </div>
+ </div>
 </template>

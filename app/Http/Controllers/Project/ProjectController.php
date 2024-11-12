@@ -6,16 +6,35 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Project;
+use App\Models\Joinee;
+use App\Events\ProjectBoardEvent;
+
 use DB;
 use Illuminate\Support\Str;
 use Validator;
+use App\Events\UserTypingEvent;
 class ProjectController extends Controller
 {
+
+    
+    public function knowWhoIsTyping($projectId,$sendId){
+        $joinees= Joinee::where('projectId', $projectId)->get();
+        foreach($joinees as $row){
+         //event..
+        
+         UserTypingEvent::dispatch($row->userId);
+        
+        }
+ 
+     }
+
 
     public function getProjects(Request $request)
     {
 
-        $data = Project::where('userId',$request->userId)->paginate(2);
+       
+
+        $data = Project::where('userId',$request->userId)->paginate(4);
 
         return response( $data, 200);
     }
@@ -23,10 +42,17 @@ class ProjectController extends Controller
     public function getProjectDetail(Request $request)
     {
         $projectCode=$request->project_code;
+        $sendId=$request->sendId;
+
         $data = Project::where('projectCode', $projectCode)->first();
 
         if(!is_null($data)){
-            return response( $data, 200);
+            ProjectBoardEvent::dispatch($projectCode);
+            $this->knowWhoIsTyping($data->id,$sendId);
+           
+            
+                return response( $data, 200);
+        
         }else{
             return response( [], 200);
         }

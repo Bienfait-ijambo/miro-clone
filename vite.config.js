@@ -18,14 +18,14 @@ export default defineConfig({
         }
     },
 
-    server: {
-        proxy: {
-          // Proxy Web Worker requests to your backend at port 8000
-          '/worker': {
-            target: 'http://127.0.0.1:8000',  // Your Laravel backend
-            changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/worker/, '/js')  // Rewrite if needed
-          }
-        }
-    }
+    // server: {
+    //     proxy: {
+    //       // Proxy Web Worker requests to your backend at port 8000
+    //       '/worker': {
+    //         target: 'http://127.0.0.1:8000',  // Your Laravel backend
+    //         changeOrigin: true,
+    //         rewrite: (path) => path.replace(/^\/worker/, '/js')  // Rewrite if needed
+    //       }
+    //     }
+    // }
 });

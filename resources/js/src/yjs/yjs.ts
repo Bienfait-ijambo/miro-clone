@@ -75,12 +75,14 @@ export async function initYjs(
 
     const provider=new WebsocketProvider(
         "ws://localhost:1234",
-        `sv000013-${projectData?.projectCode}`
-        ,
+        `sv000013-${projectData?.projectCode}`,
         yDocStore.doc
     );
 
     provider.on('sync', () =>{
+        yDocStore.loading=false
         console.log('document is synchronized....');
     })
+
+ 
 }

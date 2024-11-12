@@ -3,6 +3,7 @@ import { miniTextEditorStore } from "../../../../../store/miniTextEditor";
 import { useEditor } from "./editor";
 import { ICursor, yDocStore } from "../../../../../store/yDoc";
 import { __debounce, runFuncSequentially } from "../../../../../helper/util";
+import { getUserData } from "../../../../../helper/auth";
 
 export function useDragMiniTextEditor() {
     const { initMiniTextEditor } = useEditor();
@@ -143,6 +144,21 @@ export function useDragMiniTextEditor() {
         }
     }
 
+
+    
+    const userTyping = () => {
+        const userData=getUserData()
+
+        yDocStore.joinees.forEach(user => {
+            window.Echo.private(`typing.${user.id}`).whisper("typing", {
+                name: userData?.user?.name,
+                userId: userData?.user?.userId,
+            });
+            
+        });
+       
+    
+    }
    
     function changeMiniTextEditorBodyContent(id: number) {
         const miniTextEditorContent = document.querySelector(
@@ -152,11 +168,14 @@ export function useDragMiniTextEditor() {
             (obj) => obj.id === id
         ); 
         
-        miniTextEditorContent.addEventListener( "keydown", _changeMiniTextEditorContentOnEvent );
-        miniTextEditorContent.addEventListener( "mouseup", _changeMiniTextEditorContentOnEvent );
+        miniTextEditorContent.addEventListener( "keydown", _changeMiniTextEditorContentOnKeyDownOrOnMouseUpEvent );
+        miniTextEditorContent.addEventListener( "mouseup", _changeMiniTextEditorContentOnKeyDownOrOnMouseUpEvent );
 
 
-        function _changeMiniTextEditorContentOnEvent() {
+        function _changeMiniTextEditorContentOnKeyDownOrOnMouseUpEvent() {
+
+            userTyping()
+
             const blinkingCursor = document.querySelector(
                 ".blinking-cursor-" + id
             ) as HTMLElement;
@@ -168,6 +187,9 @@ export function useDragMiniTextEditor() {
             yDocStore.cursor.y = y;
             yDocStore.yCursor.set("x", x);
             yDocStore.yCursor.set("y", y);
+            yDocStore.yCursor.set("typingUser", yDocStore.cursor.typingUser);
+
+      
 
             function _changeMiniTextEditorContent() {
                 yDocStore.doc.transact(function () {
@@ -195,7 +217,7 @@ export function useDragMiniTextEditor() {
 
             const func2 = () => {
                 return new Promise((resolve, reject) => {
-                    console.log("change cursor......pos");
+                  
                     moveCursorToPosition(
                         miniTextEditorContent,
                         yDocStore.cursor.cursorPosition
@@ -206,7 +228,7 @@ export function useDragMiniTextEditor() {
 
             function runner() {
                 runFuncSequentially([func1, func2]).then(() => {
-                    console.log("change occur in mini text editor...");
+                    // console.log("change occur in mini text editor...");
                 });
             }
 

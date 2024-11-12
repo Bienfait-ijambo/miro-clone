@@ -8,12 +8,23 @@ use Illuminate\Support\Facades\Auth;
 // route parameter
 
 
+
+
+
 Route::get('/', function() {
+ 
     return view('welcome');
 });
 
+
+
+
+
+
 Route::get('/app/{any}', function() {
-    return view('welcome');
+    
+        return view('welcome');
+
 });
 
 

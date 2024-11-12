@@ -1,6 +1,6 @@
 import { RouteLocationNormalizedLoaded } from "vue-router";
 import { ref } from 'vue'
-import { makeHttpReq2 } from '../../../../../helper/makeHttpReq';
+import { makeHttpReq, makeHttpReq2 } from '../../../../../helper/makeHttpReq';
 import { getUserData } from "../../../../../helper/auth";
 import { App } from "../../../../../app/app";
 import { showError } from "../../../../../helper/toastnotification";

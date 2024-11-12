@@ -14,9 +14,8 @@ use App\Models\TextCaption;
 use App\Models\Drawing;
 use App\Models\Project;
 use App\Models\Joinee;
-
-
-
+use App\Events\ProjectBoardEvent;
+use App\Events\UserTypingEvent;
 
 class ProjectBoardController extends Controller
 {
@@ -40,11 +39,16 @@ class ProjectBoardController extends Controller
                     'projectId'=>$project->id,
                     'userId'=>$userId
                 ]);
+                ProjectBoardEvent::dispatch($projectCode);
+    
                 return response([
                     'message' =>'user join the project',
                     'status' =>true
             ]);
             }else{
+                
+                ProjectBoardEvent::dispatch($projectCode);
+              
                 return response([
                     'message' =>'user already joinned the project',
                     'status' =>true
@@ -67,23 +71,37 @@ class ProjectBoardController extends Controller
         return DB::transaction(function() use($request){
 
             $projectId=$request->projectId;
+            $userId=$request->userId;
 
-            $miniTextEditor = MiniTextEditor::where('projectId', $projectId)
-            ->first();
-            $stickyNote = StickyNote::where('projectId', $projectId)
-            ->first();
-            $textCaption = TextCaption::where('projectId', $projectId)
-            ->first();
-            $drawing = Drawing::where('projectId', $projectId)
-             ->first();
+            $data = Project::where('id', $projectId)->first();
 
 
-             return response([
-                'miniTextEditor'=>$miniTextEditor,
-                'stickyNote'    =>$stickyNote,
-                'textCaption'   =>$textCaption,
-                'drawing'       =>$drawing,
-             ],200);
+            if(intval($userId)===intval($data->userId)){
+                $miniTextEditor = MiniTextEditor::where('projectId', $projectId)
+                ->first();
+                $stickyNote = StickyNote::where('projectId', $projectId)
+                ->first();
+                $textCaption = TextCaption::where('projectId', $projectId)
+                ->first();
+                $drawing = Drawing::where('projectId', $projectId)
+                 ->first();
+    
+    
+                 return response([
+                    'miniTextEditor'=>$miniTextEditor,
+                    'stickyNote'    =>$stickyNote,
+                    'textCaption'   =>$textCaption,
+                    'drawing'       =>$drawing,
+                 ],200);
+            }else{
+                return response([
+                    'miniTextEditor'=>null,
+                    'stickyNote'    =>null,
+                    'textCaption'   =>null,
+                    'drawing'       =>null,
+                 ],200);
+            }
+           
         });
     }
     

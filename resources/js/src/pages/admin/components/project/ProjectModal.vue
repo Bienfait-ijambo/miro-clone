@@ -15,7 +15,6 @@ const emit = defineEmits<{
     (e: "closeModal"): void;
     (e: "getProjects"): Promise<void>;
 
-
 }>();
 
 const rules = {

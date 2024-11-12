@@ -1,0 +1,4 @@
+
+interface Window{
+    Echo:any
+}

@@ -1,26 +1,30 @@
 <script lang="ts" setup>
-import { getUserData } from "../../../../helper/auth";
+import { LoginResponseType } from '../../../../helper/auth';
+import { yDocStore } from '../../../../store/yDoc';
 
-//
+
 
 const props = defineProps<{
     mousePosition: {
         x: number;
         y: number;
     };
-    userName: string
+    userData: LoginResponseType|undefined
 }>();
-// const userData = getUserData();
+
+const userName=props.userData?.user?.name
+
 </script>
 <template>
     <div
+    v-show="yDocStore.mousePosition.userName==userName ?false:true"
         class="cursor"
         :style="{
             left: mousePosition.x + 'px',
             top: mousePosition.y + 'px',
         }"
     >
-        <span class="cursor-label px-2 py-2">{{userName}}</span>
+        <span class="cursor-label px-2 py-2">{{yDocStore.mousePosition.userName}}</span>
 
         <svg
             style="

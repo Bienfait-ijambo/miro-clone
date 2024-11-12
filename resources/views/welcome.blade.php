@@ -10,12 +10,19 @@
 
     <body>
       <div id="app"></div>
-      
+     <script>
+        // document.addEventListener('DOMContentLoaded', function(){
+        //     const userId=document.querySelector('#userId')
+        //     const userData={
+        //         userId:userId.value
+        //     }
+           
+        //     window.userData=userData
+            
+        // })
+       
+     </script>
           @vite([ 'resources/js/app.ts','resources/css/app.css'])
     </body>
-
-   
-
-    
 
 </html>
