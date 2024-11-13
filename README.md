@@ -1,11 +1,11 @@
 
 
-## RealTime Task Manager App with Laravel 11, Laravel Reverb and Vue 3 + TypeScript
+## RealTime Collaboration App
 
 ### Steps to run this project:
 
 
-1. git clone `https://github.com/Bienfait-ijambo/realtime-task-app.git`
+1. git clone `https://github.com/Bienfait-ijambo/miro-clone.git`
 
 2. cd in `in the project`
 
@@ -17,7 +17,10 @@
 
 6. Run `php artisan serve` command
 
-6. Run `php artisan queue:work` for background process
+7. Run `php artisan queue:work` for background process
+
+8. Run `npm run serve`
+
+8. Run `php artisan reverb:start`
 
 
-NB : Make sure you got maildev for TestingEmail locally
