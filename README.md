@@ -21,6 +21,8 @@
 
 8. Run `npm run serve`
 
-8. Run `php artisan reverb:start`
+9. Run `php artisan reverb:start`
+
+10. Run yjs server `node ./node_modules/y-websocket/bin/server.cjs`
 
 
