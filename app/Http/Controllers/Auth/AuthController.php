@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
+
+
 class AuthController extends Controller
 {
     
@@ -50,8 +52,7 @@ class AuthController extends Controller
      
     public function createUserViaGoogle(Request $request)
     {
-    $googleUser = Socialite::driver('google')->user();
-
+     $googleUser = Socialite::driver('google')->user();
     
         $user = User::createUser($googleUser);
 

@@ -68,39 +68,46 @@ class ProjectBoardController extends Controller
 
     public function getProjectBoardData(Request $request)
     {
-        return DB::transaction(function() use($request){
+         return DB::transaction(function() use($request){
 
             $projectId=$request->projectId;
             $userId=$request->userId;
 
-            $data = Project::where('id', $projectId)->first();
+           $project= Project::where('id', $projectId)
+                ->first();
 
+                if(intval($userId)===intval($project->userId)){
+                    $miniTextEditor = MiniTextEditor::where('projectId', $projectId)
+                    ->first();
+                    $stickyNote = StickyNote::where('projectId', $projectId)
+                    ->first();
+                    $textCaption = TextCaption::where('projectId', $projectId)
+                    ->first();
+                    $drawing = Drawing::where('projectId', $projectId)
+                     ->first();
+        
+        
+                     return response([
+                        'miniTextEditor'=>$miniTextEditor,
+                        'stickyNote'    =>$stickyNote,
+                        'textCaption'   =>$textCaption,
+                        'drawing'       =>$drawing,
+                     ],200);
+                }else{
 
-            if(intval($userId)===intval($data->userId)){
-                $miniTextEditor = MiniTextEditor::where('projectId', $projectId)
-                ->first();
-                $stickyNote = StickyNote::where('projectId', $projectId)
-                ->first();
-                $textCaption = TextCaption::where('projectId', $projectId)
-                ->first();
-                $drawing = Drawing::where('projectId', $projectId)
-                 ->first();
-    
-    
-                 return response([
-                    'miniTextEditor'=>$miniTextEditor,
-                    'stickyNote'    =>$stickyNote,
-                    'textCaption'   =>$textCaption,
-                    'drawing'       =>$drawing,
-                 ],200);
-            }else{
-                return response([
-                    'miniTextEditor'=>null,
-                    'stickyNote'    =>null,
-                    'textCaption'   =>null,
-                    'drawing'       =>null,
-                 ],200);
-            }
+                    return response([
+                        'miniTextEditor'=>null,
+                        'stickyNote'    =>null,
+                        'textCaption'   =>null,
+                        'drawing'       =>null,
+                     ],200);
+
+                }
+
+           
+
+               
+            
            
         });
     }

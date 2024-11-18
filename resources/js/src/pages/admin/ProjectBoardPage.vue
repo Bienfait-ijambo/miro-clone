@@ -15,7 +15,7 @@ import { useCanvas } from "./actions/project-board/canvas/canvas";
 import LoadingIndicator from "../../components/base-components/LoadingIndicator.vue";
 import TextCaption from "./components/project-board/TextCaption.vue";
 import { useDragTextCaption } from "./actions/project-board/text-caption/textCaption";
-import { RouterLink, useRoute } from "vue-router";
+import {  useRoute } from "vue-router";
 import { useGetProjectDetail } from "./actions/project-board/http/getProjectDetail";
 import TopNavBar from "./components/project-board/TopNavBar.vue";
 import { useSaveBoardData } from "./actions/project-board/http/saveBoardData";
@@ -97,7 +97,7 @@ onMounted(async () => {
 
     await getProjectDetail();
 
-    await getProjectBoardData(projectData.value.id);
+    await getProjectBoardData(projectData.value.id,userData);
 
     initYjs(
         {
@@ -124,14 +124,14 @@ onMounted(async () => {
 </script>
 <template>
     <div class="" @mousemove="trackMousePosition">
-        <LoadingIndicator :loading="loadingData|| yDocStore.loading" />
+        <LoadingIndicator :loading="loadingData || yDocStore.loading" />
     
         <JoinningUsersModal
             :show-modal="showJoinneesModal"
             @closeModal="hideJoiningUsersModal"
         />
 
-        <div class="flex" v-show="(loadingData|| yDocStore.loading) === true ? false : true">
+        <div class="flex" v-show="(loadingData || yDocStore.loading) === true ? false : true">
             <div class="bg-slate-100 h-screen w-[50px]">
                 <AddItem
                     @saveBoardData="saveProject"
@@ -189,7 +189,7 @@ onMounted(async () => {
                         :mouse-position="yDocStore.mousePosition"
                        
                     />
-                    {{ yDocStore.yArrayStickyNote.toArray() }}
+                    <!-- {{ yDocStore.yArrayStickyNote.toArray() }} -->
                 </div>
             </div>
         </div>

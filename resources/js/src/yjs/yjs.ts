@@ -79,10 +79,16 @@ export async function initYjs(
         yDocStore.doc
     );
 
-    provider.on('sync', () =>{
-        yDocStore.loading=false
-        console.log('document is synchronized....');
-    })
+
+    //wait until the document is synchronized
+   provider.on('sync',()=>{
+    yDocStore.loading = false;
+    console.log('document is synchronized')
+   })
+
+
+
+
 
  
 }

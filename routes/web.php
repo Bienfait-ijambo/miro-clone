@@ -29,7 +29,7 @@ Route::get('/app/{any}', function() {
 
 
 Route::get('/auth/redirect', [AuthController::class, 'redirectToGoogle']);
-Route::get('/_auth/callbackx', [AuthController::class, 'createUserViaGoogle']);
+Route::get('/auth/callback', [AuthController::class, 'createUserViaGoogle']);
 
 
 Route::get('/callback', function (Request $request) {

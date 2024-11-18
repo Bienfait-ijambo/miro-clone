@@ -5,7 +5,6 @@ import {App} from '../../app/app'
 
 function loginWithGoogle(){
     window.location.href=App.baseUrl+'/auth/redirect'
-    // window.location.href='http://127.0.0.1:8000/_auth/callbackx'
 }
 </script>
 <template>
